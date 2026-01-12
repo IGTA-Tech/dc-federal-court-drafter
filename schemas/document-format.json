@@ -1,0 +1,241 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "DC Federal District Court Document Format Requirements",
+  "description": "Validation schema based on LCvR 5.1 and LCvR 7",
+  "version": "1.0.0",
+  "effective_date": "2025-08-01",
+  "source_rules": ["LCvR 5.1", "LCvR 7"],
+
+  "paper": {
+    "size": {
+      "width_inches": 8.5,
+      "height_inches": 11,
+      "description": "Standard US Letter size"
+    },
+    "color": "white",
+    "opacity": "opaque",
+    "rule_reference": "LCvR 5.1(a)"
+  },
+
+  "typography": {
+    "font": {
+      "name": "Times New Roman",
+      "size_points": 12,
+      "alternatives": [],
+      "rule_reference": "LCvR 7(o)(1)"
+    },
+    "line_spacing": {
+      "type": "double",
+      "value": 2.0,
+      "rule_reference": "LCvR 7(o)(1)"
+    },
+    "sentence_spacing": {
+      "spaces_between_sentences": 2,
+      "description": "Two spaces between sentences",
+      "rule_reference": "LCvR 7(o)(1)"
+    },
+    "text_color": "black",
+    "image_quality": "clear black image",
+    "rule_reference": "LCvR 5.1(a)"
+  },
+
+  "margins": {
+    "minimum_inches": 1.0,
+    "top": 1.0,
+    "bottom": 1.0,
+    "left": 1.0,
+    "right": 1.0,
+    "rule_reference": "LCvR 7(o)(1)"
+  },
+
+  "page_numbers": {
+    "required": true,
+    "position": "bottom center or bottom right",
+    "rule_reference": "LCvR 7(o)(1)"
+  },
+
+  "page_limits": {
+    "motion_memorandum": {
+      "max_pages": 45,
+      "description": "Memorandum in support of motion",
+      "rule_reference": "LCvR 7(n)(1)"
+    },
+    "opposition_memorandum": {
+      "max_pages": 45,
+      "description": "Memorandum in opposition to motion",
+      "rule_reference": "LCvR 7(n)(1)"
+    },
+    "reply_memorandum": {
+      "max_pages": 25,
+      "description": "Reply memorandum",
+      "rule_reference": "LCvR 7(n)(1)"
+    },
+    "leave_to_exceed": {
+      "procedure": "File motion for leave with proposed memorandum",
+      "rule_reference": "LCvR 7(n)(2)"
+    }
+  },
+
+  "file_format": {
+    "type": "PDF",
+    "searchable_text": true,
+    "description": "Text-searchable PDF format required for ECF filing",
+    "rule_reference": "LCvR 5.4"
+  },
+
+  "caption": {
+    "required_elements": [
+      {
+        "field": "court_name",
+        "value": "UNITED STATES DISTRICT COURT FOR THE DISTRICT OF COLUMBIA",
+        "position": "top center"
+      },
+      {
+        "field": "plaintiff_name",
+        "position": "left side"
+      },
+      {
+        "field": "defendant_name",
+        "position": "left side below plaintiff"
+      },
+      {
+        "field": "case_number",
+        "format": "1:YY-cv-NNNNN-ABC",
+        "description": "Case number followed by assigned judge initials",
+        "position": "right side"
+      },
+      {
+        "field": "judge_initials",
+        "description": "Initials of assigned district judge",
+        "required": true
+      },
+      {
+        "field": "document_title",
+        "position": "below caption block",
+        "description": "Heading describing nature of document"
+      }
+    ],
+    "rule_reference": "LCvR 5.1(b), (c)"
+  },
+
+  "signature_block": {
+    "required_for": "attorneys",
+    "required_fields": [
+      {
+        "field": "attorney_name",
+        "required": true
+      },
+      {
+        "field": "firm_name",
+        "required": false
+      },
+      {
+        "field": "address",
+        "required": true
+      },
+      {
+        "field": "telephone",
+        "required": true
+      },
+      {
+        "field": "email",
+        "required": true
+      },
+      {
+        "field": "dc_bar_number",
+        "required": true,
+        "description": "DC Bar identification number for DC Bar members"
+      }
+    ],
+    "electronic_signature": {
+      "format": "/s/ Attorney Name",
+      "description": "ECF login/password serves as signature"
+    },
+    "rule_reference": "LCvR 5.1(d)"
+  },
+
+  "citations": {
+    "pin_cites_required": true,
+    "description": "All citations must include exact page references",
+    "format_guide": "Bluebook citation format recommended",
+    "rule_reference": "LCvR 7(o)(2)"
+  },
+
+  "exhibits_attachments": {
+    "case_number_required": true,
+    "description": "All exhibits and attachments must include case number",
+    "rule_reference": "LCvR 5.1(c)(2)"
+  },
+
+  "certificate_of_service": {
+    "required": true,
+    "exceptions": ["documents filed at case initiation"],
+    "must_include": ["date of service", "manner of service", "persons served"],
+    "rule_reference": "LCvR 5.3"
+  },
+
+  "ecf_requirements": {
+    "format": "text-searchable PDF",
+    "signature": "ECF login credentials serve as signature",
+    "filing_deadline": "11:59 PM Eastern Time",
+    "rule_reference": "LCvR 5.4"
+  },
+
+  "validation_checks": [
+    {
+      "id": "font_check",
+      "description": "Verify Times New Roman 12pt",
+      "severity": "error"
+    },
+    {
+      "id": "margin_check",
+      "description": "Verify minimum 1 inch margins",
+      "severity": "error"
+    },
+    {
+      "id": "spacing_check",
+      "description": "Verify double spacing",
+      "severity": "error"
+    },
+    {
+      "id": "page_limit_check",
+      "description": "Verify page count within limits",
+      "severity": "error"
+    },
+    {
+      "id": "caption_check",
+      "description": "Verify caption contains all required elements",
+      "severity": "error"
+    },
+    {
+      "id": "judge_initials_check",
+      "description": "Verify judge initials in case number",
+      "severity": "error"
+    },
+    {
+      "id": "signature_block_check",
+      "description": "Verify signature block completeness",
+      "severity": "error"
+    },
+    {
+      "id": "pin_cite_check",
+      "description": "Verify citations include page numbers",
+      "severity": "warning"
+    },
+    {
+      "id": "searchable_pdf_check",
+      "description": "Verify PDF is text-searchable",
+      "severity": "error"
+    },
+    {
+      "id": "page_number_check",
+      "description": "Verify pages are numbered",
+      "severity": "error"
+    },
+    {
+      "id": "sentence_spacing_check",
+      "description": "Verify two spaces between sentences",
+      "severity": "warning"
+    }
+  ]
+}

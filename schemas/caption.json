@@ -1,0 +1,90 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "DC Federal District Court Caption Schema",
+  "description": "Structure for document captions per LCvR 5.1",
+
+  "caption_template": {
+    "court_header": "UNITED STATES DISTRICT COURT\nFOR THE DISTRICT OF COLUMBIA",
+    "alignment": "center",
+    "case_style": "all_caps"
+  },
+
+  "parties_block": {
+    "format": "versus_style",
+    "plaintiff_position": "upper_left",
+    "defendant_position": "lower_left",
+    "separator": "v.",
+    "bracket_style": "right_bracket_or_vertical_line"
+  },
+
+  "case_number_block": {
+    "position": "right_of_parties",
+    "format_pattern": "^\\d:\\d{2}-cv-\\d{5}-[A-Z]{2,4}$",
+    "components": [
+      {
+        "name": "division",
+        "value": "1",
+        "description": "Always 1 for DC District"
+      },
+      {
+        "name": "year",
+        "format": "YY",
+        "description": "Two-digit year"
+      },
+      {
+        "name": "case_type",
+        "value": "cv",
+        "description": "cv for civil, cr for criminal, mc for miscellaneous"
+      },
+      {
+        "name": "sequence",
+        "format": "NNNNN",
+        "description": "Five-digit sequence number"
+      },
+      {
+        "name": "judge_initials",
+        "required": true,
+        "description": "Assigned judge initials (e.g., ABC, JDB, RCL)"
+      }
+    ]
+  },
+
+  "document_title": {
+    "position": "below_caption_block",
+    "alignment": "center",
+    "style": ["bold", "all_caps"],
+    "examples": [
+      "MOTION TO DISMISS",
+      "MEMORANDUM IN SUPPORT OF DEFENDANT'S MOTION TO DISMISS",
+      "PLAINTIFF'S OPPOSITION TO MOTION TO DISMISS",
+      "REPLY IN SUPPORT OF MOTION TO DISMISS",
+      "COMPLAINT FOR DECLARATORY AND INJUNCTIVE RELIEF",
+      "ANSWER TO COMPLAINT",
+      "NOTICE OF APPEAL"
+    ]
+  },
+
+  "sample_caption": "UNITED STATES DISTRICT COURT\nFOR THE DISTRICT OF COLUMBIA\n\n______________________________\n                              )\nJOHN DOE,                     )\n                              )\n          Plaintiff,          )    Case No. 1:24-cv-00123-ABC\n                              )\n     v.                       )\n                              )\nJANE SMITH,                   )\n                              )\n          Defendant.          )\n______________________________)  \n\n            MOTION TO DISMISS\n",
+
+  "multi_party_format": {
+    "multiple_plaintiffs": "List each on separate line, end with 'et al.' if many",
+    "multiple_defendants": "List each on separate line, end with 'et al.' if many",
+    "consolidated_cases": "List primary case number, note 'Consolidated with Case No. X'"
+  },
+
+  "special_designations": {
+    "class_action": "Add 'CLASS ACTION' below case number",
+    "jury_demand": "Add 'JURY DEMAND' or 'JURY TRIAL DEMANDED' if applicable",
+    "related_cases": "Note related case numbers if designated"
+  },
+
+  "judge_initials_directory": {
+    "description": "Common DC District Court judge initials - verify current roster",
+    "note": "Check https://www.dcd.uscourts.gov/judges for current judges",
+    "sample_initials": [
+      "ABJ", "ACK", "APM", "BAH", "CJN", "CKK", "CRC",
+      "DAB", "DLF", "EGS", "GK", "JDB", "JEB", "JMB",
+      "KBJ", "PLF", "RBW", "RCL", "RDM", "RJL", "TFH", "TSC", "TJK"
+    ]
+  }
+}

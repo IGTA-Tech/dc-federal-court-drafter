@@ -1,0 +1,350 @@
+{
+  "metadata": {
+    "court": "U.S. District Court for the District of Columbia",
+    "last_updated": "2025-08-14",
+    "base_url": "https://www.dcd.uscourts.gov"
+  },
+  "local_rules": {
+    "master_document": {
+      "url": "https://www.dcd.uscourts.gov/sites/dcd/files/local_rules/Local%20Rules%20AUG_2025.pdf",
+      "description": "Complete Local Rules - August 2025",
+      "effective_date": "2025-08-01"
+    },
+    "landing_page": "https://www.dcd.uscourts.gov/court-info/local-rules-and-orders/local-rules",
+    "amendments": [
+      {
+        "url": "https://www.dcd.uscourts.gov/sites/dcd/files/local_rules/Order_approving_LCVR_83.2_08.14.2025.pdf",
+        "rules": ["83.2", "83.9", "57.21.1"],
+        "effective_date": "2025-08-14"
+      },
+      {
+        "url": "https://www.dcd.uscourts.gov/sites/dcd/files/local_rules/Rules%20LCvR%205.1%207k%2040.7%20etc.pdf",
+        "rules": ["5.1(c)(1)", "7(k)", "40.7(f)", "57.14(f)", "83.6(c)"],
+        "effective_date": "2022-03-23"
+      },
+      {
+        "url": "https://www.dcd.uscourts.gov/sites/dcd/files/local_rules/Rule%20LCvR%2084.7%20signed_May2022.pdf",
+        "rules": ["84.7"],
+        "effective_date": "2022-05-26"
+      },
+      {
+        "url": "https://www.dcd.uscourts.gov/sites/dcd/files/local_rules/Rule%20LCvR%2083.2%20and%20LCrR%2044.1%20signed_May2022.pdf",
+        "rules": ["83.2", "44.1"],
+        "effective_date": "2022-05-26"
+      },
+      {
+        "url": "https://www.dcd.uscourts.gov/sites/dcd/files/local_rules/Signed%20Order%20LCvR%2083.1.pdf",
+        "rules": ["83.1"],
+        "effective_date": "2023-12-14"
+      },
+      {
+        "url": "https://www.dcd.uscourts.gov/sites/dcd/files/local_rules/Signed%20Order%20LCrR%2053.1.pdf",
+        "rules": ["53.1"],
+        "effective_date": "2023-12-14"
+      },
+      {
+        "url": "https://www.dcd.uscourts.gov/sites/dcd/files/local_rules/Signed%20Order%20LCrR%2024.1%20and%20LCvR%2047.1.pdf",
+        "rules": ["24.1", "47.1"],
+        "effective_date": "2023-12-14"
+      }
+    ]
+  },
+  "new_case_forms": {
+    "index_page": "https://www.dcd.uscourts.gov/new-case-forms",
+    "forms": [
+      {
+        "name": "Civil Cover Sheet (JS-44)",
+        "url": "https://www.dcd.uscourts.gov/sites/dcd/files/CivilCoverSheetJS44_Nov_2020FILL.pdf",
+        "required": true,
+        "description": "Required for ALL new civil cases"
+      },
+      {
+        "name": "Nature of Suit Code Descriptions",
+        "url": "https://www.dcd.uscourts.gov/sites/dcd/files/js_044_nos_code_descriptions.pdf",
+        "required": false,
+        "description": "Reference for JS-44 NOS codes"
+      },
+      {
+        "name": "Certificate Under LCvR 26.1",
+        "url": "https://www.dcd.uscourts.gov/sites/dcd/files/CO386-online.pdf",
+        "required": true,
+        "description": "Corporate disclosure statement"
+      },
+      {
+        "name": "Notice of Designation of Related Cases",
+        "url": "https://www.dcd.uscourts.gov/sites/dcd/files/RelatedCaseCO932.pdf",
+        "required": true,
+        "description": "Identifies related pending cases"
+      },
+      {
+        "name": "Notice/Consent to Magistrate Judge",
+        "url": "https://www.dcd.uscourts.gov/sites/dcd/files/NoticeOfRightToConsentMarch2022.pdf",
+        "required": false,
+        "description": "Consent to magistrate jurisdiction"
+      },
+      {
+        "name": "Consent to Magistrate (Employment Discrimination Pilot)",
+        "url": "https://www.dcd.uscourts.gov/sites/dcd/files/Notice%20%20Consent%20Form%20H%20Deck%202025_FILL.pdf",
+        "required": false,
+        "description": "Pilot program for employment discrimination cases"
+      }
+    ]
+  },
+  "summons_forms": {
+    "standard": {
+      "name": "Summons in Civil Action (21/60-day)",
+      "url": "https://www.dcd.uscourts.gov/sites/dcd/files/CivilSummonsAO440_2015FILL.pdf",
+      "answer_deadline_days": [21, 60]
+    },
+    "foia": {
+      "name": "Summons - FOIA (30-day)",
+      "url": "https://www.dcd.uscourts.gov/sites/dcd/files/Summons-FOIA_2013_FILL.pdf",
+      "answer_deadline_days": 30
+    },
+    "foreign_state": {
+      "name": "Summons - Foreign State (60-day)",
+      "url": "https://www.dcd.uscourts.gov/sites/dcd/files/Summons_28_USC_1608_120711FILL.pdf",
+      "answer_deadline_days": 60,
+      "statute": "28 USC 1608"
+    },
+    "fisheries": {
+      "name": "Summons - Fisheries (45-day)",
+      "url": "https://www.dcd.uscourts.gov/sites/dcd/files/Summons_16_USC_1855_3A_FILL.pdf",
+      "answer_deadline_days": 45,
+      "statute": "16 USC 1855(3)(A)"
+    },
+    "third_party": {
+      "name": "Summons on Third-Party Complaint (AO 441)",
+      "url": "https://www.dcd.uscourts.gov/sites/dcd/files/ThirdPtySummonsAO441_2018FILL.pdf"
+    }
+  },
+  "general_civil_forms": {
+    "index_page": "https://www.dcd.uscourts.gov/general-civil-forms",
+    "forms": [
+      {
+        "name": "Affidavit of Mailing",
+        "url": "https://www.dcd.uscourts.gov/sites/dcd/files/AfdtofMailing2010FILL.pdf"
+      },
+      {
+        "name": "Affidavit Requesting Foreign Mailing",
+        "url": "https://www.dcd.uscourts.gov/sites/dcd/files/AfdReqForeignMlg2023FILL.pdf"
+      },
+      {
+        "name": "Affidavit in Support of Default",
+        "url": "https://www.dcd.uscourts.gov/sites/dcd/files/AfdtofDefault2020FILL.pdf"
+      },
+      {
+        "name": "Military Affidavit (for Default)",
+        "url": "https://www.dcd.uscourts.gov/sites/dcd/files/MilitaryAfdt2010FILL.pdf"
+      },
+      {
+        "name": "Notice of Appeal in Civil Case",
+        "url": "https://www.dcd.uscourts.gov/sites/dcd/files/NoticeofAppeal_Aug2017.pdf"
+      },
+      {
+        "name": "Notice of Attachment Before Judgment",
+        "url": "https://www.dcd.uscourts.gov/sites/dcd/files/NtcAttB4Jgmt2010FILL.pdf"
+      },
+      {
+        "name": "Supersedeas Undertaking on Appeal",
+        "url": "https://www.dcd.uscourts.gov/sites/dcd/files/Supersedeas2012FILL.pdf"
+      },
+      {
+        "name": "Attachment for Contempt",
+        "url": "https://www.dcd.uscourts.gov/sites/dcd/files/AttachforContempt2010FILL.pdf"
+      },
+      {
+        "name": "Mediator Application",
+        "url": "https://www.dcd.uscourts.gov/sites/dcd/files/MediatorApplication2010FINAL.pdf"
+      }
+    ]
+  },
+  "writ_forms": [
+    {
+      "name": "Writ of Execution",
+      "url": "https://www.dcd.uscourts.gov/sites/dcd/files/WritofExecution_DC11_2010FILL.pdf"
+    },
+    {
+      "name": "Writ of Replevin",
+      "url": "https://www.dcd.uscourts.gov/sites/dcd/files/WritofReplevin2024_FILL.pdf"
+    },
+    {
+      "name": "Writ of Attachment - Personal Property",
+      "url": "https://www.dcd.uscourts.gov/sites/dcd/files/WritAttachPropertyCO901_2012FILL.pdf"
+    },
+    {
+      "name": "Writ of Garnishment - Wages/Salary",
+      "url": "https://www.dcd.uscourts.gov/sites/dcd/files/WritGarnishWagesCO938_2010FILL1.pdf"
+    },
+    {
+      "name": "Writ of Garnishment - Other than Wages",
+      "url": "https://www.dcd.uscourts.gov/sites/dcd/files/WritGarnishOtherCO901A_2010FILL.pdf"
+    },
+    {
+      "name": "Writ of Attachment Before Judgment - Lands",
+      "url": "https://www.dcd.uscourts.gov/sites/dcd/files/WritAttachLandsCO903_2010FILL.pdf"
+    },
+    {
+      "name": "Writ of Attachment Before Judgment - Credits",
+      "url": "https://www.dcd.uscourts.gov/sites/dcd/files/WritAttachCreditsCO903A_2010FILL.pdf"
+    }
+  ],
+  "national_ao_forms": [
+    {
+      "name": "Subpoena to Testify at Hearing/Trial (AO 88)",
+      "url": "http://www.uscourts.gov/uscourts/FormsAndFees/Forms/AO088.pdf"
+    },
+    {
+      "name": "Subpoena to Testify at Deposition (AO 88A)",
+      "url": "http://www.uscourts.gov/uscourts/FormsAndFees/Forms/AO088A.pdf"
+    },
+    {
+      "name": "Subpoena to Produce Documents (AO 88B)",
+      "url": "http://www.uscourts.gov/uscourts/FormsAndFees/Forms/AO088B.pdf"
+    },
+    {
+      "name": "Bill of Costs (AO 133)",
+      "url": "http://www.uscourts.gov/uscourts/FormsAndFees/Forms/AO133.pdf"
+    },
+    {
+      "name": "Patent/Trademark Report (AO 120)",
+      "url": "http://www.uscourts.gov/uscourts/FormsAndFees/Forms/AO120.pdf"
+    },
+    {
+      "name": "Copyright Report (AO 121)",
+      "url": "http://www.uscourts.gov/forms/other-forms/report-filing-or-determination-action-or-appeal-regarding-copyright"
+    },
+    {
+      "name": "Appearance of Counsel (AO 458)",
+      "url": "http://www.uscourts.gov/uscourts/FormsAndFees/Forms/AO458.pdf"
+    },
+    {
+      "name": "Pro Se National Forms Index",
+      "url": "https://www.uscourts.gov/forms/civil-pro-se-forms"
+    }
+  ],
+  "attorney_forms": {
+    "index_page": "https://www.dcd.uscourts.gov/attorney-forms",
+    "forms": [
+      {
+        "name": "Criminal Case Appearance Form",
+        "url": "https://www.dcd.uscourts.gov/sites/dcd/files/cr-apr-e.pdf"
+      },
+      {
+        "name": "Certificate of Good Standing Request",
+        "url": "https://www.dcd.uscourts.gov/sites/dcd/files/CertGoodStandingRequest2023_FILL_0.pdf"
+      }
+    ],
+    "registration": "https://www.dcd.uscourts.gov/attorney-renewal",
+    "bar_lookup": "https://www.dcd.uscourts.gov/bar-memberattorney-information-lookup"
+  },
+  "ecf": {
+    "login_portal": "https://ecf.dcd.uscourts.gov/",
+    "instructions_index": "https://www.dcd.uscourts.gov/ecf-forms-instructions-and-other-information",
+    "documents": [
+      {
+        "name": "ECF Start-Up Guide",
+        "url": "https://www.dcd.uscourts.gov/sites/dcd/files/2021%20Start%20Up%20Guide.pdf"
+      },
+      {
+        "name": "Docketing Basics",
+        "url": "https://www.dcd.uscourts.gov/sites/dcd/files/2023%20Docketing%20Basics.pdf"
+      },
+      {
+        "name": "ECF Checklist for Attorneys",
+        "url": "https://www.dcd.uscourts.gov/sites/dcd/files/2019ChecklistforAttorneys_0.pdf"
+      },
+      {
+        "name": "Civil Docketing Events Reference",
+        "url": "https://www.dcd.uscourts.gov/sites/dcd/files/2016_Civil_Docketing_Events.pdf"
+      },
+      {
+        "name": "Criminal Docketing Events Reference",
+        "url": "https://www.dcd.uscourts.gov/sites/dcd/files/2016_Criminal_Docketing_Events.pdf"
+      },
+      {
+        "name": "Notice of Appeal ECF Instructions",
+        "url": "https://www.dcd.uscourts.gov/sites/dcd/files/2023%20Notice%20of%20Appeal.pdf"
+      },
+      {
+        "name": "Amended Complaints Instructions",
+        "url": "https://www.dcd.uscourts.gov/sites/dcd/files/2016_Amended_Complaints.pdf"
+      },
+      {
+        "name": "Motions to Intervene/Amicus Instructions",
+        "url": "https://www.dcd.uscourts.gov/sites/dcd/files/2016_Intervene_and_Amicus.pdf"
+      },
+      {
+        "name": "Return of Service Quick Reference",
+        "url": "https://www.dcd.uscourts.gov/sites/dcd/files/2016_Returns_of_Service.pdf"
+      },
+      {
+        "name": "Highly Sensitive Documents Procedures",
+        "url": "https://www.dcd.uscourts.gov/sites/dcd/files/HSDexternal.pdf"
+      },
+      {
+        "name": "Password-Protected Sealed Applications",
+        "url": "https://www.dcd.uscourts.gov/sites/dcd/files/PPexternal.pdf"
+      },
+      {
+        "name": "Pro Se E-Filing Instructions",
+        "url": "https://www.dcd.uscourts.gov/sites/dcd/files/NextGEN_Tutorial_Pro_Se_for_Registering_for_E-filing.pdf"
+      },
+      {
+        "name": "NextGen Registration Tutorial",
+        "url": "https://www.dcd.uscourts.gov/sites/dcd/files/NextGEN_Tutorial_for_Registering_for_E-filing_1.pdf"
+      },
+      {
+        "name": "Link PACER to NextGen",
+        "url": "https://www.dcd.uscourts.gov/sites/dcd/files/Link_an_Upgraded_PACER_Account_to_a_NextGen_CMECF%20FINAL.pdf"
+      },
+      {
+        "name": "Attorney FAQ",
+        "url": "https://www.dcd.uscourts.gov/sites/dcd/files/External_FAQs.pdf"
+      },
+      {
+        "name": "Bounceback Policy",
+        "url": "https://www.dcd.uscourts.gov/sites/dcd/files/BouncebackNotice.pdf"
+      }
+    ]
+  },
+  "standing_orders": {
+    "index_page": "https://www.dcd.uscourts.gov/standing-orders",
+    "orders": [
+      {
+        "number": "25-49",
+        "url": "https://www.dcd.uscourts.gov/sites/dcd/files/Exec.%20Order%2025-49.pdf",
+        "subject": "Procedures for Access and Management of Restricted Documents"
+      },
+      {
+        "number": "21-3",
+        "url": "https://www.dcd.uscourts.gov/sites/dcd/files/Standing%20Order%20No%202021-3...pdf",
+        "subject": "Filing, Service, and Management of Highly Sensitive Documents"
+      },
+      {
+        "number": "20-85",
+        "url": "https://www.dcd.uscourts.gov/sites/dcd/files/Standing%20Order%20No%2020-85...pdf",
+        "subject": "Request for Exemption from Electronic Public Access Fees"
+      },
+      {
+        "number": "22-05",
+        "url": "https://www.dcd.uscourts.gov/sites/dcd/files/SO%2022-05_Process...pdf",
+        "subject": "Public Docketing Process"
+      },
+      {
+        "number": "First Step Act",
+        "url": "https://www.dcd.uscourts.gov/sites/dcd/files/Standing_Order_First_Step_Act_2018.pdf",
+        "subject": "Retroactive application of Fair Sentencing Act"
+      }
+    ]
+  },
+  "reference_pages": {
+    "homepage": "https://www.dcd.uscourts.gov/",
+    "rules_forms_main": "https://www.dcd.uscourts.gov/rules-forms",
+    "complete_forms_index": "https://www.dcd.uscourts.gov/district-columbia-forms-index",
+    "judges": "https://www.dcd.uscourts.gov/judges",
+    "court_calendars": "https://www.dcd.uscourts.gov/court-calendars",
+    "fees_payment": "https://www.dcd.uscourts.gov/fee-and-payment-information",
+    "ecf_records": "https://www.dcd.uscourts.gov/ECFCR"
+  }
+}
