@@ -1,0 +1,92 @@
+{
+  "rule_number": "LCvR 5.4",
+  "title": "Electronic Case Filing",
+  "effective_date": "2025-08-01",
+  "source_url": "https://www.dcd.uscourts.gov/sites/dcd/files/local_rules/Local%20Rules%20AUG_2025.pdf",
+  "chunks": [
+    {
+      "id": "lcvr_5_4_a",
+      "section": "LCvR 5.4(a)",
+      "title": "Mandatory Electronic Filing",
+      "content": "Unless otherwise permitted by these Rules or by the Court, all documents required to be filed with the Court in civil and criminal cases must be filed electronically using the Court's Case Management/Electronic Case Filing system (CM/ECF).",
+      "requirements": {
+        "mandatory": true,
+        "system": "CM/ECF",
+        "exceptions": "as permitted by Rules or Court"
+      },
+      "keywords": ["electronic filing", "CM/ECF", "mandatory"]
+    },
+    {
+      "id": "lcvr_5_4_b",
+      "section": "LCvR 5.4(b)",
+      "title": "Registration for Electronic Filing",
+      "content": "Attorneys admitted to the Bar of this Court and attorneys admitted pro hac vice must register as Filing Users of the Court's CM/ECF system. Registration constitutes consent to receive service by electronic means.",
+      "requirements": {
+        "registration": "required for attorneys",
+        "consent": "registration = consent to electronic service"
+      },
+      "keywords": ["registration", "CM/ECF", "Filing User", "electronic service"]
+    },
+    {
+      "id": "lcvr_5_4_c",
+      "section": "LCvR 5.4(c)",
+      "title": "Signatures on Electronic Filings",
+      "content": "The user log-in and password required to submit documents to the CM/ECF system serve as the user's signature on all electronic documents filed with the Court. The name of the Filing User must also appear as a signature line, preceded by '/s/'.",
+      "requirements": {
+        "signature_method": "login credentials serve as signature",
+        "signature_format": "/s/ [Attorney Name]",
+        "requirement": "Filing User name must appear"
+      },
+      "examples": {
+        "correct": "/s/ Jane Attorney",
+        "full_block": "/s/ Jane Attorney\nJane Attorney\nSmith & Jones LLP\n123 Law Street\nWashington, DC 20001\n(202) 555-1234\njattorney@smithjones.com\nDC Bar No. 123456"
+      },
+      "keywords": ["electronic signature", "/s/", "login", "password", "signature"]
+    },
+    {
+      "id": "lcvr_5_4_d",
+      "section": "LCvR 5.4(d)",
+      "title": "Filing Deadline",
+      "content": "Filing must be completed before midnight Eastern Time to be considered timely filed that day.",
+      "requirements": {
+        "deadline": "11:59 PM Eastern Time",
+        "timezone": "Eastern"
+      },
+      "keywords": ["deadline", "midnight", "Eastern Time", "timely filing"]
+    },
+    {
+      "id": "lcvr_5_4_e",
+      "section": "LCvR 5.4(e)",
+      "title": "PDF Format Requirements",
+      "content": "All electronically filed documents are to be in text-searchable Portable Document Format (PDF). Documents that exist only in paper form may be scanned into PDF format. Scanned documents must be of sufficient quality to be readable.",
+      "requirements": {
+        "format": "PDF",
+        "searchable": "text-searchable required",
+        "scanned_docs": "allowed if readable quality"
+      },
+      "keywords": ["PDF", "searchable", "scanned", "format"]
+    },
+    {
+      "id": "lcvr_5_4_f",
+      "section": "LCvR 5.4(f)",
+      "title": "File Size Limits",
+      "content": "The CM/ECF system has file size limits. Documents exceeding the file size limit must be split into multiple files, with each file labeled sequentially.",
+      "requirements": {
+        "large_files": "must be split",
+        "labeling": "sequential labels required"
+      },
+      "keywords": ["file size", "limit", "split files"]
+    },
+    {
+      "id": "lcvr_5_4_g",
+      "section": "LCvR 5.4(g)",
+      "title": "Hyperlinks",
+      "content": "Electronically filed documents may contain hyperlinks to other portions of the same document, to documents previously filed in the case, or to authorities cited in the document.",
+      "requirements": {
+        "hyperlinks_allowed": true,
+        "permitted_targets": ["same document", "previously filed documents", "cited authorities"]
+      },
+      "keywords": ["hyperlinks", "links", "electronic documents"]
+    }
+  ]
+}

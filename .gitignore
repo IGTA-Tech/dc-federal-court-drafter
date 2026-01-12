@@ -28,7 +28,6 @@ env/
 
 # IDE
 .idea/
-.vscode/
 *.swp
 *.swo
 *~
@@ -56,3 +55,6 @@ cache/
 .env.local
 *.key
 credentials.json
+
+# Temp files
+tmpclaude-*

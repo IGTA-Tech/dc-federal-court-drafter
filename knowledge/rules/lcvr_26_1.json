@@ -1,0 +1,35 @@
+{
+  "rule_number": "LCvR 26.1",
+  "title": "Corporate Disclosure Statement",
+  "effective_date": "2025-08-01",
+  "source_url": "https://www.dcd.uscourts.gov/sites/dcd/files/local_rules/Local%20Rules%20AUG_2025.pdf",
+  "chunks": [
+    {
+      "id": "lcvr_26_1_a",
+      "section": "LCvR 26.1(a)",
+      "title": "Disclosure Requirement",
+      "content": "A nongovernmental corporate party must file a disclosure statement that identifies any parent corporation and any publicly held corporation owning 10% or more of its stock or states that there is no such corporation.",
+      "requirements": {
+        "who_must_file": "nongovernmental corporate parties",
+        "must_identify": ["parent corporation", "publicly held corporations owning 10%+ stock"],
+        "alternative": "state no such corporation exists"
+      },
+      "form": {
+        "name": "Certificate Under LCvR 26.1",
+        "url": "https://www.dcd.uscourts.gov/sites/dcd/files/CO386-online.pdf"
+      },
+      "keywords": ["corporate disclosure", "parent corporation", "stock ownership", "10%"]
+    },
+    {
+      "id": "lcvr_26_1_b",
+      "section": "LCvR 26.1(b)",
+      "title": "Timing of Disclosure",
+      "content": "A party must file the disclosure statement with its first appearance, pleading, petition, motion, response, or other request addressed to the Court and must supplement it promptly upon any change in the information.",
+      "requirements": {
+        "timing": "with first filing",
+        "update": "promptly upon any change"
+      },
+      "keywords": ["first appearance", "disclosure timing", "supplement"]
+    }
+  ]
+}

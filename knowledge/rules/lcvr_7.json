@@ -1,0 +1,167 @@
+{
+  "rule_number": "LCvR 7",
+  "title": "Motions",
+  "effective_date": "2025-08-01",
+  "source_url": "https://www.dcd.uscourts.gov/sites/dcd/files/local_rules/Local%20Rules%20AUG_2025.pdf",
+  "chunks": [
+    {
+      "id": "lcvr_7_a",
+      "section": "LCvR 7(a)",
+      "title": "Form of Motions",
+      "content": "Every motion must be accompanied by a proposed order. The proposed order shall be filed as a separate document and must contain the case number and the title of the motion to which it relates.",
+      "requirements": {
+        "proposed_order": "required",
+        "filing": "separate document",
+        "must_include": ["case number", "motion title"]
+      },
+      "keywords": ["motion", "proposed order", "separate document"]
+    },
+    {
+      "id": "lcvr_7_b",
+      "section": "LCvR 7(b)",
+      "title": "Memorandum of Points and Authorities",
+      "content": "Each motion shall be accompanied by a memorandum of points and authorities in support thereof and by a statement of the specific points of law and the authorities upon which the movant relies.",
+      "requirements": {
+        "memorandum_required": true,
+        "must_include": ["points of law", "authorities"]
+      },
+      "keywords": ["memorandum", "points and authorities", "legal argument"]
+    },
+    {
+      "id": "lcvr_7_c",
+      "section": "LCvR 7(c)",
+      "title": "Opposition Memorandum",
+      "content": "Within 14 days of the date of service or at such other time as the Court may direct, an opposing party shall serve and file a memorandum of points and authorities in opposition to the motion. If such a memorandum is not filed within the prescribed time, the Court may treat the motion as conceded.",
+      "requirements": {
+        "deadline": "14 days from service",
+        "alternative": "as Court directs",
+        "consequence_of_failure": "motion may be treated as conceded"
+      },
+      "keywords": ["opposition", "14 days", "deadline", "conceded"]
+    },
+    {
+      "id": "lcvr_7_d",
+      "section": "LCvR 7(d)",
+      "title": "Reply Memorandum",
+      "content": "Within 7 days after service of the memorandum in opposition, the moving party may serve and file a reply memorandum.",
+      "requirements": {
+        "deadline": "7 days after opposition",
+        "optional": true
+      },
+      "keywords": ["reply", "7 days", "reply memorandum"]
+    },
+    {
+      "id": "lcvr_7_e",
+      "section": "LCvR 7(e)",
+      "title": "Oral Hearing",
+      "content": "A party may request oral hearing on a motion by requesting a date from the courtroom deputy and noting the hearing date in the caption of the motion. In the absence of such a request, the Court, in its discretion, may decide the motion without oral argument.",
+      "requirements": {
+        "request_method": "request date from courtroom deputy",
+        "notation": "hearing date in caption",
+        "default": "Court may decide without oral argument"
+      },
+      "keywords": ["oral hearing", "oral argument", "courtroom deputy"]
+    },
+    {
+      "id": "lcvr_7_h",
+      "section": "LCvR 7(h)",
+      "title": "Motion for Summary Judgment",
+      "content": "Each motion for summary judgment shall be accompanied by a statement of material facts as to which the moving party contends there is no genuine issue, which shall include references to the parts of the record relied on to support the statement. An opposition to such a motion shall be accompanied by a separate concise statement of genuine issues setting forth all material facts as to which it is contended there exists a genuine issue necessary to be litigated.",
+      "requirements": {
+        "moving_party": {
+          "required": "statement of material facts",
+          "must_include": "references to record"
+        },
+        "opposing_party": {
+          "required": "statement of genuine issues",
+          "must_include": "material facts in dispute"
+        }
+      },
+      "keywords": ["summary judgment", "material facts", "genuine issue", "statement of facts"]
+    },
+    {
+      "id": "lcvr_7_n_1",
+      "section": "LCvR 7(n)(1)",
+      "title": "Page Limitations",
+      "content": "Absent leave of the Court, memoranda of points and authorities in support of, and in opposition to, motions may not exceed 45 pages, and reply memoranda may not exceed 25 pages.",
+      "requirements": {
+        "motion_memorandum": {
+          "max_pages": 45,
+          "type": "memorandum in support"
+        },
+        "opposition_memorandum": {
+          "max_pages": 45,
+          "type": "memorandum in opposition"
+        },
+        "reply_memorandum": {
+          "max_pages": 25,
+          "type": "reply memorandum"
+        },
+        "exception": "leave of Court required to exceed"
+      },
+      "keywords": ["page limit", "45 pages", "25 pages", "memorandum length"]
+    },
+    {
+      "id": "lcvr_7_n_2",
+      "section": "LCvR 7(n)(2)",
+      "title": "Leave to Exceed Page Limits",
+      "content": "A motion for leave to file a memorandum in excess of the page limits must be filed before filing the memorandum and must include a proposed memorandum as an exhibit. The motion shall state the reasons why additional pages are necessary.",
+      "requirements": {
+        "timing": "before filing memorandum",
+        "must_include": ["proposed memorandum as exhibit", "reasons for excess pages"]
+      },
+      "keywords": ["leave to exceed", "page limits", "excess pages"]
+    },
+    {
+      "id": "lcvr_7_o_1",
+      "section": "LCvR 7(o)(1)",
+      "title": "Formatting Requirements",
+      "content": "Motions and submissions should be double-spaced, in 12-point Times New Roman font, with page numbers and margins of no less than 1 inch, and two spaces between sentences.",
+      "requirements": {
+        "font": {
+          "name": "Times New Roman",
+          "size": 12
+        },
+        "spacing": {
+          "line_spacing": "double-spaced",
+          "sentence_spacing": "two spaces between sentences"
+        },
+        "margins": {
+          "minimum": "1 inch",
+          "all_sides": true
+        },
+        "page_numbers": {
+          "required": true
+        }
+      },
+      "keywords": ["font", "Times New Roman", "12 point", "double-spaced", "margins", "page numbers", "formatting"]
+    },
+    {
+      "id": "lcvr_7_o_2",
+      "section": "LCvR 7(o)(2)",
+      "title": "Citation Requirements",
+      "content": "All citations must include exact page references (pin citations).",
+      "requirements": {
+        "pin_cites": "required",
+        "description": "exact page references for all citations"
+      },
+      "examples": {
+        "correct": "Bell Atl. Corp. v. Twombly, 550 U.S. 544, 570 (2007)",
+        "incorrect": "Bell Atl. Corp. v. Twombly, 550 U.S. 544 (2007)"
+      },
+      "keywords": ["citations", "pin cites", "page references"]
+    },
+    {
+      "id": "lcvr_7_o_3",
+      "section": "LCvR 7(o)(3)",
+      "title": "Electronic Filing Format",
+      "content": "All electronically filed documents must be in text-searchable PDF format.",
+      "requirements": {
+        "format": "PDF",
+        "searchable": true,
+        "description": "text-searchable Portable Document Format"
+      },
+      "keywords": ["PDF", "searchable", "electronic filing", "ECF"]
+    }
+  ]
+}

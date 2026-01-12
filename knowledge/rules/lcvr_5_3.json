@@ -1,0 +1,35 @@
+{
+  "rule_number": "LCvR 5.3",
+  "title": "Certificate of Service",
+  "effective_date": "2025-08-01",
+  "source_url": "https://www.dcd.uscourts.gov/sites/dcd/files/local_rules/Local%20Rules%20AUG_2025.pdf",
+  "chunks": [
+    {
+      "id": "lcvr_5_3_a",
+      "section": "LCvR 5.3(a)",
+      "title": "Certificate of Service Requirement",
+      "content": "All documents filed with the Court, other than those filed at the commencement of an action, must contain a certificate of service stating the date and manner of service and the names of the persons served.",
+      "requirements": {
+        "required_for": "all filings after case initiation",
+        "exception": "documents filed at commencement",
+        "must_include": ["date of service", "manner of service", "names of persons served"]
+      },
+      "keywords": ["certificate of service", "service", "date", "manner"]
+    },
+    {
+      "id": "lcvr_5_3_b",
+      "section": "LCvR 5.3(b)",
+      "title": "Electronic Service",
+      "content": "Service is complete upon electronic transmission through CM/ECF. The Notice of Electronic Filing constitutes service on Filing Users.",
+      "requirements": {
+        "completion": "upon electronic transmission",
+        "proof": "Notice of Electronic Filing"
+      },
+      "keywords": ["electronic service", "CM/ECF", "Notice of Electronic Filing"]
+    }
+  ],
+  "template": {
+    "title": "CERTIFICATE OF SERVICE",
+    "content": "I hereby certify that on [DATE], a copy of the foregoing [DOCUMENT NAME] was served via the Court's CM/ECF system on all counsel of record.\n\n/s/ [Attorney Name]\n[Attorney Name]"
+  }
+}

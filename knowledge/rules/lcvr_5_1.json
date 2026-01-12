@@ -1,0 +1,105 @@
+{
+  "rule_number": "LCvR 5.1",
+  "title": "Form and Filing of Documents",
+  "effective_date": "2025-08-01",
+  "source_url": "https://www.dcd.uscourts.gov/sites/dcd/files/local_rules/Local%20Rules%20AUG_2025.pdf",
+  "chunks": [
+    {
+      "id": "lcvr_5_1_a",
+      "section": "LCvR 5.1(a)",
+      "title": "Paper Format Requirements",
+      "content": "Any document submitted to the Court in paper format must be unfolded and produced on opaque 8½ x 11 inch white paper using a clear black image.",
+      "requirements": {
+        "paper_size": "8.5 x 11 inches",
+        "paper_color": "white",
+        "paper_opacity": "opaque",
+        "text_color": "black",
+        "image_quality": "clear"
+      },
+      "keywords": ["paper", "format", "size", "white", "opaque", "black"]
+    },
+    {
+      "id": "lcvr_5_1_b",
+      "section": "LCvR 5.1(b)",
+      "title": "Caption Requirements",
+      "content": "Every paper filed must contain a caption setting forth the name of the court, the title of the action, the file number, and the designation of the nature of the paper. A party's first filing must include their name and full residence address in the caption. If the party does not wish its full residence address to appear on the public docket, they may omit the address and simultaneously file under seal a notice containing its full address. Pro se parties must include telephone number.",
+      "requirements": {
+        "court_name": "UNITED STATES DISTRICT COURT FOR THE DISTRICT OF COLUMBIA",
+        "required_elements": ["court name", "title of action", "file number", "nature of paper"],
+        "first_filing": ["party name", "full residence address"],
+        "pro_se_additional": ["telephone number"]
+      },
+      "keywords": ["caption", "court name", "file number", "title", "address", "pro se"]
+    },
+    {
+      "id": "lcvr_5_1_c_1",
+      "section": "LCvR 5.1(c)(1)",
+      "title": "Case Number and Judge Initials",
+      "content": "The case number of every paper must be followed by the initials of the judge to whom the case has been assigned. If the case is referred to a magistrate judge, the magistrate judge's initials must also be included.",
+      "requirements": {
+        "format": "1:YY-cv-NNNNN-ABC",
+        "judge_initials": "required",
+        "magistrate_initials": "required if referred"
+      },
+      "examples": ["1:24-cv-00123-ABC", "1:24-cv-00456-JDB-GMH"],
+      "keywords": ["case number", "judge initials", "magistrate", "assigned judge"]
+    },
+    {
+      "id": "lcvr_5_1_c_2",
+      "section": "LCvR 5.1(c)(2)",
+      "title": "Document Heading",
+      "content": "Every document must contain a heading under the caption that describes the nature of the document.",
+      "requirements": {
+        "heading_required": true,
+        "position": "below caption",
+        "content": "describes nature of document"
+      },
+      "examples": [
+        "MOTION TO DISMISS",
+        "MEMORANDUM IN SUPPORT OF DEFENDANT'S MOTION TO DISMISS",
+        "PLAINTIFF'S OPPOSITION TO MOTION TO DISMISS",
+        "REPLY IN SUPPORT OF MOTION TO DISMISS"
+      ],
+      "keywords": ["heading", "document title", "nature of document"]
+    },
+    {
+      "id": "lcvr_5_1_c_3",
+      "section": "LCvR 5.1(c)(3)",
+      "title": "Exhibits and Attachments",
+      "content": "All exhibits or attachments must include the number of the case in which they are filed.",
+      "requirements": {
+        "case_number_required": true,
+        "applies_to": ["exhibits", "attachments"]
+      },
+      "keywords": ["exhibits", "attachments", "case number"]
+    },
+    {
+      "id": "lcvr_5_1_d",
+      "section": "LCvR 5.1(d)",
+      "title": "Attorney Signature Requirements",
+      "content": "Every paper signed by an attorney must contain their name, address, and telephone number. All attorneys listed on any document who are members of the D.C. Bar must include their D.C. Bar identification numbers, regardless of whether or not those attorneys sign the document.",
+      "requirements": {
+        "required_fields": ["attorney name", "address", "telephone number"],
+        "dc_bar_members": "must include DC Bar ID number",
+        "applies_to": "all listed attorneys, not just signers"
+      },
+      "signature_format": {
+        "electronic": "/s/ Attorney Name",
+        "paper": "original wet signature"
+      },
+      "keywords": ["signature", "attorney", "DC Bar", "bar number", "telephone", "address"]
+    },
+    {
+      "id": "lcvr_5_1_e",
+      "section": "LCvR 5.1(e)",
+      "title": "Nonconforming Papers",
+      "content": "A document that does not comply with the formatting requirements of this rule and FRCP 10(a) will be identified by the clerk to be corrected by the end of the next business day. If it is not corrected, the clerk will forward to the assigned judge with a recommendation, if appropriate, that it be stricken for failure to comply.",
+      "consequences": {
+        "initial_action": "clerk identifies for correction",
+        "deadline": "end of next business day",
+        "failure_to_correct": "forwarded to judge with recommendation to strike"
+      },
+      "keywords": ["nonconforming", "correction", "stricken", "compliance"]
+    }
+  ]
+}
