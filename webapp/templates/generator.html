@@ -1,0 +1,698 @@
+{% extends "base.html" %}
+
+{% block title %}Document Generator - DC Court Drafter{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Left Column: Form -->
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-pencil-square"></i> Document Generator</h5>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="loadDraft()">
+                        <i class="bi bi-folder2-open"></i> Load Draft
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="saveDraft()">
+                        <i class="bi bi-save"></i> Save Draft
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <form id="documentForm">
+                    <!-- Document Type Selection -->
+                    <div class="mb-4">
+                        <h6 class="border-bottom pb-2"><i class="bi bi-file-earmark"></i> Document Type</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="form-label">Document Type *</label>
+                                <select class="form-select" id="documentType" required>
+                                    <optgroup label="Motions">
+                                        <option value="motion_to_dismiss">Motion to Dismiss</option>
+                                        <option value="motion_summary_judgment">Motion for Summary Judgment</option>
+                                        <option value="motion_to_compel">Motion to Compel</option>
+                                        <option value="motion_preliminary_injunction">Motion for Preliminary Injunction</option>
+                                        <option value="motion_tro">Motion for Temporary Restraining Order</option>
+                                        <option value="motion_leave_amend">Motion for Leave to Amend</option>
+                                        <option value="motion_extend_time">Motion to Extend Time</option>
+                                    </optgroup>
+                                    <optgroup label="Responses">
+                                        <option value="opposition">Opposition</option>
+                                        <option value="reply">Reply</option>
+                                    </optgroup>
+                                    <optgroup label="Pleadings">
+                                        <option value="complaint">Complaint</option>
+                                        <option value="answer">Answer</option>
+                                    </optgroup>
+                                    <optgroup label="Other">
+                                        <option value="notice_of_appeal">Notice of Appeal</option>
+                                    </optgroup>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Custom Title (optional)</label>
+                                <input type="text" class="form-control" id="customTitle" placeholder="Override default title">
+                            </div>
+                        </div>
+                        <div class="row mt-2" id="motionTypeRow" style="display: none;">
+                            <div class="col-md-12">
+                                <label class="form-label">Motion Being Responded To</label>
+                                <input type="text" class="form-control" id="motionType" placeholder="e.g., DEFENDANT'S MOTION TO DISMISS">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Case Information -->
+                    <div class="mb-4">
+                        <h6 class="border-bottom pb-2"><i class="bi bi-briefcase"></i> Case Information</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="form-label">Case Number</label>
+                                <input type="text" class="form-control" id="caseNumber" placeholder="1:24-cv-00123-ABC">
+                                <div class="form-text">Optional. Format: 1:YY-cv-NNNNN-ABC (can be added later)</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Judge</label>
+                                <select class="form-select" id="judgeSelect">
+                                    <option value="">Select Judge...</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Plaintiff *</label>
+                                <input type="text" class="form-control" id="plaintiff" placeholder="Plaintiff Name" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Defendant *</label>
+                                <input type="text" class="form-control" id="defendant" placeholder="Defendant Name" required>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Party Filing Document</label>
+                                <input type="text" class="form-control" id="partyName" placeholder="e.g., Plaintiff John Doe">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Party Represented</label>
+                                <select class="form-select" id="partyRepresented">
+                                    <option value="Plaintiff">Plaintiff</option>
+                                    <option value="Defendant">Defendant</option>
+                                    <option value="Plaintiffs">Plaintiffs</option>
+                                    <option value="Defendants">Defendants</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Attorney Information -->
+                    <div class="mb-4">
+                        <h6 class="border-bottom pb-2"><i class="bi bi-person-badge"></i> Attorney Information</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label class="form-label">Attorney Name *</label>
+                                <input type="text" class="form-control" id="attorneyName" placeholder="Attorney Name" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Firm Name</label>
+                                <input type="text" class="form-control" id="firmName" placeholder="Law Firm Name">
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Street Address *</label>
+                                <input type="text" class="form-control" id="address" placeholder="123 Main Street" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">City, State ZIP *</label>
+                                <input type="text" class="form-control" id="cityStateZip" placeholder="Washington, DC 20001" required>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-md-4">
+                                <label class="form-label">Phone *</label>
+                                <input type="tel" class="form-control" id="phone" placeholder="(202) 555-1234" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Email *</label>
+                                <input type="email" class="form-control" id="email" placeholder="attorney@firm.com" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">DC Bar Number *</label>
+                                <input type="text" class="form-control" id="dcBarNumber" placeholder="123456" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Document Content -->
+                    <div class="mb-4">
+                        <h6 class="border-bottom pb-2"><i class="bi bi-card-text"></i> Document Content</h6>
+
+                        <div class="mb-3">
+                            <label class="form-label">Introduction</label>
+                            <textarea class="form-control" id="introduction" rows="3" placeholder="Opening statement for the motion..."></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Factual Background</label>
+                            <textarea class="form-control" id="facts" rows="5" placeholder="Statement of relevant facts..."></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Legal Standard</label>
+                            <textarea class="form-control" id="legalStandard" rows="4" placeholder="Applicable legal standard..."></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Argument</label>
+                            <textarea class="form-control" id="argument" rows="6" placeholder="Legal argument..."></textarea>
+                        </div>
+
+                        <div id="additionalArguments">
+                            <!-- Additional arguments will be added here -->
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-secondary mb-3" onclick="addArgument()">
+                            <i class="bi bi-plus"></i> Add Argument Section
+                        </button>
+
+                        <div class="mb-3">
+                            <label class="form-label">Conclusion</label>
+                            <textarea class="form-control" id="conclusion" rows="3" placeholder="Relief requested..."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Options -->
+                    <div class="mb-4">
+                        <h6 class="border-bottom pb-2"><i class="bi bi-gear"></i> Options</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="includeCertificate" checked>
+                                    <label class="form-check-label" for="includeCertificate">
+                                        Include Certificate of Service
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Filing Date</label>
+                                <input type="date" class="form-control" id="filingDate">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Generate Buttons -->
+                    <div class="d-flex gap-2 flex-wrap">
+                        <button type="button" class="btn btn-primary btn-lg" onclick="generateDocument('docx')">
+                            <i class="bi bi-file-earmark-word"></i> Generate DOCX
+                        </button>
+                        <button type="button" class="btn btn-danger btn-lg" onclick="generateDocument('pdf')">
+                            <i class="bi bi-file-earmark-pdf"></i> Generate PDF
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" onclick="validateDocument()">
+                            <i class="bi bi-check-circle"></i> Validate
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" onclick="clearForm()">
+                            <i class="bi bi-x-circle"></i> Clear Form
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Preview & Validation -->
+    <div class="col-lg-4">
+        <!-- Validation Results -->
+        <div class="card mb-3">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="bi bi-check-circle"></i> Validation</h6>
+            </div>
+            <div class="card-body" id="validationResults">
+                <p class="text-muted mb-0">Click "Validate" to check document compliance.</p>
+            </div>
+        </div>
+
+        <!-- Quick Reference -->
+        <div class="card mb-3">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="bi bi-info-circle"></i> Quick Reference</h6>
+            </div>
+            <div class="card-body">
+                <table class="table table-sm mb-0">
+                    <tr>
+                        <td><strong>Font</strong></td>
+                        <td>Times New Roman, 12pt</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Spacing</strong></td>
+                        <td>Double-spaced</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Margins</strong></td>
+                        <td>1 inch all sides</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Motion Pages</strong></td>
+                        <td>45 pages max</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Reply Pages</strong></td>
+                        <td>25 pages max</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- Saved Drafts -->
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="mb-0"><i class="bi bi-folder"></i> Saved Drafts</h6>
+                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="refreshDrafts()">
+                    <i class="bi bi-arrow-clockwise"></i>
+                </button>
+            </div>
+            <div class="card-body" id="draftsList" style="max-height: 300px; overflow-y: auto;">
+                <p class="text-muted mb-0">Loading drafts...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Load Draft Modal -->
+<div class="modal fade" id="loadDraftModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Load Draft</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="loadDraftList">
+                Loading...
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Argument counter for additional arguments
+let argumentCount = 0;
+
+// Load judges on page load
+document.addEventListener('DOMContentLoaded', function() {
+    loadJudges();
+    refreshDrafts();
+
+    // Show/hide motion type field based on document type
+    document.getElementById('documentType').addEventListener('change', function() {
+        const showMotionType = ['opposition', 'reply'].includes(this.value);
+        document.getElementById('motionTypeRow').style.display = showMotionType ? 'block' : 'none';
+    });
+
+    // Set default date to today
+    document.getElementById('filingDate').valueAsDate = new Date();
+});
+
+// Load judges dropdown
+async function loadJudges() {
+    try {
+        const response = await fetch('/api/judges');
+        const data = await response.json();
+        const select = document.getElementById('judgeSelect');
+
+        data.judges.forEach(judge => {
+            const option = document.createElement('option');
+            option.value = judge.initials;
+            option.textContent = `${judge.initials} - ${judge.name}`;
+            option.dataset.name = judge.name;
+            select.appendChild(option);
+        });
+    } catch (error) {
+        console.error('Error loading judges:', error);
+    }
+}
+
+// Add additional argument section
+function addArgument() {
+    argumentCount++;
+    const container = document.getElementById('additionalArguments');
+    const div = document.createElement('div');
+    div.className = 'mb-3 additional-argument';
+    div.id = `argument-${argumentCount}`;
+    div.innerHTML = `
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <label class="form-label mb-0">Additional Argument ${argumentCount}</label>
+            <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeArgument(${argumentCount})">
+                <i class="bi bi-trash"></i>
+            </button>
+        </div>
+        <input type="text" class="form-control mb-2" id="argHeading-${argumentCount}" placeholder="Argument Heading">
+        <textarea class="form-control" id="argContent-${argumentCount}" rows="4" placeholder="Argument content..."></textarea>
+    `;
+    container.appendChild(div);
+}
+
+// Remove additional argument
+function removeArgument(num) {
+    document.getElementById(`argument-${num}`).remove();
+}
+
+// Collect form data
+function collectFormData() {
+    // Collect additional arguments
+    const additionalArguments = [];
+    document.querySelectorAll('.additional-argument').forEach(div => {
+        const num = div.id.split('-')[1];
+        const heading = document.getElementById(`argHeading-${num}`).value;
+        const content = document.getElementById(`argContent-${num}`).value;
+        if (heading || content) {
+            additionalArguments.push({ heading, content });
+        }
+    });
+
+    // Get judge name from selection
+    const judgeSelect = document.getElementById('judgeSelect');
+    const selectedOption = judgeSelect.options[judgeSelect.selectedIndex];
+    const judgeName = selectedOption.dataset.name || '';
+
+    // Format date
+    const dateInput = document.getElementById('filingDate').value;
+    let formattedDate = '';
+    if (dateInput) {
+        const date = new Date(dateInput);
+        formattedDate = date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+    }
+
+    return {
+        document_type: document.getElementById('documentType').value,
+        custom_title: document.getElementById('customTitle').value,
+        motion_type: document.getElementById('motionType').value,
+        case_number: document.getElementById('caseNumber').value,
+        judge_initials: document.getElementById('judgeSelect').value,
+        judge_name: judgeName,
+        plaintiff: document.getElementById('plaintiff').value,
+        defendant: document.getElementById('defendant').value,
+        party_name: document.getElementById('partyName').value || document.getElementById('plaintiff').value,
+        party_represented: document.getElementById('partyRepresented').value,
+        attorney: {
+            name: document.getElementById('attorneyName').value,
+            firm: document.getElementById('firmName').value,
+            address: document.getElementById('address').value,
+            city_state_zip: document.getElementById('cityStateZip').value,
+            phone: document.getElementById('phone').value,
+            email: document.getElementById('email').value,
+            dc_bar_number: document.getElementById('dcBarNumber').value
+        },
+        sections: {
+            introduction: document.getElementById('introduction').value,
+            facts: document.getElementById('facts').value,
+            legal_standard: document.getElementById('legalStandard').value,
+            argument: document.getElementById('argument').value,
+            conclusion: document.getElementById('conclusion').value,
+            additional_arguments: additionalArguments
+        },
+        include_certificate_of_service: document.getElementById('includeCertificate').checked,
+        date: formattedDate
+    };
+}
+
+// Generate document
+async function generateDocument(format) {
+    const data = collectFormData();
+    data.format = format;
+
+    try {
+        const response = await fetch('/api/generate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            alert('Error: ' + error.error);
+            return;
+        }
+
+        // Download the file
+        const blob = await response.blob();
+        const contentDisposition = response.headers.get('Content-Disposition');
+        let filename = `document.${format}`;
+        if (contentDisposition) {
+            const match = contentDisposition.match(/filename="?([^"]+)"?/);
+            if (match) filename = match[1];
+        }
+
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        a.remove();
+
+    } catch (error) {
+        alert('Error generating document: ' + error.message);
+    }
+}
+
+// Validate document
+async function validateDocument() {
+    const data = collectFormData();
+
+    try {
+        const response = await fetch('/api/validate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+        displayValidation(result);
+
+    } catch (error) {
+        alert('Error validating: ' + error.message);
+    }
+}
+
+// Display validation results
+function displayValidation(result) {
+    const container = document.getElementById('validationResults');
+    let html = '';
+
+    if (result.is_valid) {
+        html += '<div class="alert alert-success mb-2"><i class="bi bi-check-circle-fill"></i> Document is valid</div>';
+    } else {
+        html += '<div class="alert alert-danger mb-2"><i class="bi bi-x-circle-fill"></i> Document has errors</div>';
+    }
+
+    if (result.errors && result.errors.length > 0) {
+        html += '<h6 class="text-danger">Errors:</h6><ul class="list-unstyled small">';
+        result.errors.forEach(e => {
+            html += `<li><i class="bi bi-x-circle text-danger"></i> ${e.message} <span class="text-muted">(${e.rule})</span></li>`;
+        });
+        html += '</ul>';
+    }
+
+    if (result.warnings && result.warnings.length > 0) {
+        html += '<h6 class="text-warning">Warnings:</h6><ul class="list-unstyled small">';
+        result.warnings.forEach(w => {
+            html += `<li><i class="bi bi-exclamation-triangle text-warning"></i> ${w.message}</li>`;
+        });
+        html += '</ul>';
+    }
+
+    if (result.passed && result.passed.length > 0) {
+        html += '<h6 class="text-success">Passed:</h6><ul class="list-unstyled small">';
+        result.passed.forEach(p => {
+            html += `<li><i class="bi bi-check text-success"></i> ${p.message}</li>`;
+        });
+        html += '</ul>';
+    }
+
+    container.innerHTML = html;
+}
+
+// Save draft
+async function saveDraft() {
+    const data = collectFormData();
+
+    try {
+        const response = await fetch('/api/drafts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            alert('Draft saved: ' + result.filename);
+            refreshDrafts();
+        } else {
+            alert('Error: ' + result.error);
+        }
+    } catch (error) {
+        alert('Error saving draft: ' + error.message);
+    }
+}
+
+// Refresh drafts list
+async function refreshDrafts() {
+    try {
+        const response = await fetch('/api/drafts');
+        const data = await response.json();
+        const container = document.getElementById('draftsList');
+
+        if (data.drafts.length === 0) {
+            container.innerHTML = '<p class="text-muted mb-0">No saved drafts.</p>';
+            return;
+        }
+
+        let html = '<ul class="list-group list-group-flush">';
+        data.drafts.forEach(draft => {
+            const date = new Date(draft.modified).toLocaleDateString();
+            html += `
+                <li class="list-group-item d-flex justify-content-between align-items-center p-2">
+                    <div>
+                        <small class="d-block">${draft.case_number}</small>
+                        <small class="text-muted">${date}</small>
+                    </div>
+                    <div class="btn-group btn-group-sm">
+                        <button class="btn btn-outline-primary" onclick="loadDraftFile('${draft.filename}')">
+                            <i class="bi bi-folder2-open"></i>
+                        </button>
+                        <button class="btn btn-outline-danger" onclick="deleteDraft('${draft.filename}')">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </li>
+            `;
+        });
+        html += '</ul>';
+        container.innerHTML = html;
+
+    } catch (error) {
+        console.error('Error loading drafts:', error);
+    }
+}
+
+// Load draft
+function loadDraft() {
+    const modal = new bootstrap.Modal(document.getElementById('loadDraftModal'));
+    modal.show();
+    refreshLoadDraftList();
+}
+
+async function refreshLoadDraftList() {
+    try {
+        const response = await fetch('/api/drafts');
+        const data = await response.json();
+        const container = document.getElementById('loadDraftList');
+
+        if (data.drafts.length === 0) {
+            container.innerHTML = '<p class="text-muted">No saved drafts.</p>';
+            return;
+        }
+
+        let html = '<ul class="list-group">';
+        data.drafts.forEach(draft => {
+            const date = new Date(draft.modified).toLocaleDateString();
+            html += `
+                <li class="list-group-item list-group-item-action" style="cursor: pointer;" onclick="loadDraftFile('${draft.filename}')">
+                    <strong>${draft.case_number}</strong><br>
+                    <small class="text-muted">${draft.document_type} - ${date}</small>
+                </li>
+            `;
+        });
+        html += '</ul>';
+        container.innerHTML = html;
+
+    } catch (error) {
+        console.error('Error loading drafts list:', error);
+    }
+}
+
+// Load specific draft file
+async function loadDraftFile(filename) {
+    try {
+        const response = await fetch(`/api/drafts/${filename}`);
+        const data = await response.json();
+
+        // Populate form
+        document.getElementById('documentType').value = data.document_type || '';
+        document.getElementById('customTitle').value = data.custom_title || '';
+        document.getElementById('motionType').value = data.motion_type || '';
+        document.getElementById('caseNumber').value = data.case_number || '';
+        document.getElementById('judgeSelect').value = data.judge_initials || '';
+        document.getElementById('plaintiff').value = data.plaintiff || '';
+        document.getElementById('defendant').value = data.defendant || '';
+        document.getElementById('partyName').value = data.party_name || '';
+        document.getElementById('partyRepresented').value = data.party_represented || 'Plaintiff';
+
+        if (data.attorney) {
+            document.getElementById('attorneyName').value = data.attorney.name || '';
+            document.getElementById('firmName').value = data.attorney.firm || '';
+            document.getElementById('address').value = data.attorney.address || '';
+            document.getElementById('cityStateZip').value = data.attorney.city_state_zip || '';
+            document.getElementById('phone').value = data.attorney.phone || '';
+            document.getElementById('email').value = data.attorney.email || '';
+            document.getElementById('dcBarNumber').value = data.attorney.dc_bar_number || '';
+        }
+
+        if (data.sections) {
+            document.getElementById('introduction').value = data.sections.introduction || '';
+            document.getElementById('facts').value = data.sections.facts || '';
+            document.getElementById('legalStandard').value = data.sections.legal_standard || '';
+            document.getElementById('argument').value = data.sections.argument || '';
+            document.getElementById('conclusion').value = data.sections.conclusion || '';
+        }
+
+        document.getElementById('includeCertificate').checked = data.include_certificate_of_service !== false;
+
+        // Close modal if open
+        const modal = bootstrap.Modal.getInstance(document.getElementById('loadDraftModal'));
+        if (modal) modal.hide();
+
+        // Show/hide motion type row
+        const showMotionType = ['opposition', 'reply'].includes(data.document_type);
+        document.getElementById('motionTypeRow').style.display = showMotionType ? 'block' : 'none';
+
+    } catch (error) {
+        alert('Error loading draft: ' + error.message);
+    }
+}
+
+// Delete draft
+async function deleteDraft(filename) {
+    if (!confirm('Delete this draft?')) return;
+
+    try {
+        const response = await fetch(`/api/drafts/${filename}`, { method: 'DELETE' });
+        const result = await response.json();
+        if (result.success) {
+            refreshDrafts();
+        } else {
+            alert('Error: ' + result.error);
+        }
+    } catch (error) {
+        alert('Error deleting draft: ' + error.message);
+    }
+}
+
+// Clear form
+function clearForm() {
+    if (!confirm('Clear the entire form?')) return;
+    document.getElementById('documentForm').reset();
+    document.getElementById('additionalArguments').innerHTML = '';
+    argumentCount = 0;
+    document.getElementById('validationResults').innerHTML = '<p class="text-muted mb-0">Click "Validate" to check document compliance.</p>';
+    document.getElementById('filingDate').valueAsDate = new Date();
+}
+</script>
+{% endblock %}

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}DC Federal Court Document Drafter{% endblock %}</title>
+    <meta name="description" content="Free document drafting tool for U.S. District Court for the District of Columbia. Generate properly formatted motions, pleadings, and court filings.">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/favicon.png') }}">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <i class="bi bi-building me-2"></i>
+                <span>DC Court Document Drafter</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'generator' or request.endpoint == 'index' %}active{% endif %}" href="/generator">
+                            <i class="bi bi-pencil-square"></i> Document Generator
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'research' %}active{% endif %}" href="/research">
+                            <i class="bi bi-search"></i> Court Research
+                        </a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ms-auto">
+                    <!-- Welcome user -->
+                    <li class="nav-item d-flex align-items-center me-3" style="display: none !important;" id="welcomeContainer">
+                        <span class="welcome-badge">
+                            <i class="bi bi-person-circle me-1"></i>
+                            <span id="welcomeUser"></span>
+                        </span>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-question-circle"></i> Help
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#rulesModal">Formatting Rules</a></li>
+                            <li><a class="dropdown-item" href="https://www.dcd.uscourts.gov/court-info/local-rules-and-orders/local-rules" target="_blank">DC Local Rules</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="https://ecf.dcd.uscourts.gov/" target="_blank">ECF Login</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="https://www.dcfederallitigation.com" target="_blank">
+                                <i class="bi bi-box-arrow-up-right me-1"></i> DC Federal Litigation
+                            </a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container-fluid py-4">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer mt-auto py-3">
+        <div class="container text-center">
+            <div class="mb-2">
+                <span>DC Federal Court Document Drafter</span>
+                <span class="mx-2">|</span>
+                <span>U.S. District Court for the District of Columbia</span>
+            </div>
+            <div class="powered-by">
+                Powered by <a href="https://www.dcfederallitigation.com" target="_blank">DC Federal Litigation</a>
+                <span class="mx-2">|</span>
+                <a href="https://www.dcfederallitigation.com/contact" target="_blank">Contact Us</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Registration Modal -->
+    <div class="modal fade" id="registrationModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div>
+                        <h5 class="modal-title mb-1">
+                            <i class="bi bi-building me-2"></i>Welcome to DC Court Document Drafter
+                        </h5>
+                        <div class="brand-subtitle">Powered by DC Federal Litigation</div>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted mb-4">
+                        Please register to access our free document drafting tool. Your information helps us improve our services.
+                    </p>
+                    <form id="registrationForm" onsubmit="submitRegistration(event)">
+                        <div class="mb-3">
+                            <label class="form-label">Full Name <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="regName" placeholder="John Smith" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email Address <span class="text-danger">*</span></label>
+                            <input type="email" class="form-control" id="regEmail" placeholder="john@lawfirm.com" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Organization / Firm</label>
+                            <input type="text" class="form-control" id="regOrganization" placeholder="Smith & Associates LLP">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Phone Number</label>
+                            <input type="tel" class="form-control" id="regPhone" placeholder="(202) 555-1234">
+                        </div>
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="regNewsletter" checked>
+                            <label class="form-check-label small" for="regNewsletter">
+                                Send me updates about DC Federal Litigation services
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 btn-lg">
+                            <i class="bi bi-arrow-right-circle me-2"></i>Access Document Drafter
+                        </button>
+                    </form>
+                    <div class="text-center mt-3">
+                        <small class="text-muted">
+                            By registering, you agree to our
+                            <a href="https://www.dcfederallitigation.com/privacy" target="_blank">Privacy Policy</a>
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rules Modal -->
+    <div class="modal fade" id="rulesModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-white">DC District Court Formatting Rules</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>LCvR 7(o)(1) - Format Requirements</h6>
+                    <ul>
+                        <li><strong>Font:</strong> Times New Roman, 12 point</li>
+                        <li><strong>Spacing:</strong> Double-spaced, 2 spaces between sentences</li>
+                        <li><strong>Margins:</strong> 1 inch minimum on all sides</li>
+                        <li><strong>Page Numbers:</strong> Required on all pages</li>
+                    </ul>
+
+                    <h6>LCvR 7(n)(1) - Page Limits</h6>
+                    <ul>
+                        <li><strong>Motions/Oppositions:</strong> 45 pages maximum</li>
+                        <li><strong>Replies:</strong> 25 pages maximum</li>
+                    </ul>
+
+                    <h6>LCvR 5.1(b) - Caption Requirements</h6>
+                    <ul>
+                        <li>Court name</li>
+                        <li>Party names</li>
+                        <li>Case number with judge initials (e.g., 1:24-cv-00123-ABC)</li>
+                    </ul>
+
+                    <h6>LCvR 5.1(d) - Signature Block</h6>
+                    <ul>
+                        <li>Attorney name</li>
+                        <li>Firm name (if applicable)</li>
+                        <li>Address</li>
+                        <li>Telephone</li>
+                        <li>Email</li>
+                        <li>DC Bar number</li>
+                    </ul>
+
+                    <h6>LCvR 5.4 - ECF Requirements</h6>
+                    <ul>
+                        <li>Text-searchable PDF required for filing</li>
+                        <li>Electronic signature format: /s/ Attorney Name</li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <a href="https://www.dcd.uscourts.gov/court-info/local-rules-and-orders/local-rules" target="_blank" class="btn btn-outline-secondary">
+                        <i class="bi bi-box-arrow-up-right me-1"></i>View Full Rules
+                    </a>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

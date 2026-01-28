@@ -47,8 +47,12 @@ Thumbs.db
 *.docx
 !templates/*.pdf
 output/
+!webapp/output/.gitkeep
 temp/
 cache/
+
+# User data (keep private)
+webapp/output/registered_users.csv
 
 # Secrets
 .env

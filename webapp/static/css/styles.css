@@ -1,0 +1,376 @@
+/* DC Federal Court Document Drafter - Custom Styles
+   Branding: DC Federal Litigation - www.dcfederallitigation.com
+*/
+
+/* Brand Colors */
+:root {
+    --brand-navy: #1a2a4a;
+    --brand-navy-light: #2c3e5c;
+    --brand-navy-dark: #0f1a2e;
+    --brand-gold: #c9a227;
+    --brand-gold-light: #d4b84a;
+    --brand-white: #ffffff;
+    --brand-gray-light: #f8f9fa;
+    --brand-gray: #6c757d;
+}
+
+/* General */
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+main {
+    flex: 1;
+    background-color: #f5f6f8;
+}
+
+/* Navbar - Navy branding */
+.navbar {
+    background-color: var(--brand-navy) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.navbar-brand img {
+    height: 36px;
+    margin-right: 10px;
+}
+
+.navbar .nav-link {
+    color: rgba(255, 255, 255, 0.85) !important;
+    transition: color 0.2s ease;
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link.active {
+    color: var(--brand-gold) !important;
+}
+
+.navbar .dropdown-menu {
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Welcome user badge */
+.welcome-badge {
+    background-color: var(--brand-navy-light);
+    color: var(--brand-gold);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+}
+
+/* Cards */
+.card {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border: none;
+    border-radius: 8px;
+}
+
+.card-header {
+    background-color: var(--brand-white);
+    border-bottom: 2px solid var(--brand-navy);
+    border-radius: 8px 8px 0 0 !important;
+}
+
+.card-header h5,
+.card-header h6 {
+    color: var(--brand-navy);
+    font-weight: 600;
+}
+
+.card-header i {
+    color: var(--brand-gold);
+}
+
+/* Form styling */
+.form-label {
+    font-weight: 500;
+    font-size: 0.875rem;
+    color: var(--brand-navy);
+}
+
+.form-text {
+    font-size: 0.75rem;
+    color: var(--brand-gray);
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--brand-navy);
+    box-shadow: 0 0 0 0.2rem rgba(26, 42, 74, 0.15);
+}
+
+textarea.form-control {
+    font-family: 'Times New Roman', Times, serif;
+}
+
+/* Section headers in forms */
+.card-body h6.border-bottom {
+    color: var(--brand-navy);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+    border-color: var(--brand-gold) !important;
+}
+
+.card-body h6.border-bottom i {
+    color: var(--brand-gold);
+}
+
+/* Buttons - Primary navy */
+.btn-primary {
+    background-color: var(--brand-navy);
+    border-color: var(--brand-navy);
+}
+
+.btn-primary:hover {
+    background-color: var(--brand-navy-dark);
+    border-color: var(--brand-navy-dark);
+}
+
+.btn-primary:focus {
+    box-shadow: 0 0 0 0.2rem rgba(26, 42, 74, 0.5);
+}
+
+.btn-outline-primary {
+    color: var(--brand-navy);
+    border-color: var(--brand-navy);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--brand-navy);
+    border-color: var(--brand-navy);
+}
+
+/* Gold accent button */
+.btn-gold {
+    background-color: var(--brand-gold);
+    border-color: var(--brand-gold);
+    color: var(--brand-navy);
+}
+
+.btn-gold:hover {
+    background-color: var(--brand-gold-light);
+    border-color: var(--brand-gold-light);
+    color: var(--brand-navy);
+}
+
+/* Validation results */
+#validationResults .alert {
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
+#validationResults h6 {
+    font-size: 0.875rem;
+    margin-bottom: 0.25rem;
+    margin-top: 0.5rem;
+}
+
+#validationResults ul {
+    margin-bottom: 0;
+}
+
+#validationResults li {
+    padding: 0.125rem 0;
+}
+
+/* Search results */
+.list-group-item-action {
+    cursor: pointer;
+    transition: background-color 0.15s ease-in-out;
+}
+
+.list-group-item-action:hover {
+    background-color: rgba(26, 42, 74, 0.05);
+}
+
+/* Modal adjustments */
+.modal-xl {
+    max-width: 1000px;
+}
+
+.modal-header {
+    background-color: var(--brand-navy);
+    color: var(--brand-white);
+}
+
+.modal-header .btn-close {
+    filter: brightness(0) invert(1);
+}
+
+/* Registration Modal */
+#registrationModal .modal-header {
+    background: linear-gradient(135deg, var(--brand-navy) 0%, var(--brand-navy-light) 100%);
+}
+
+#registrationModal .modal-title {
+    font-weight: 600;
+}
+
+#registrationModal .brand-subtitle {
+    color: var(--brand-gold);
+    font-size: 0.9rem;
+}
+
+/* Footer */
+.footer {
+    background-color: var(--brand-navy);
+    color: rgba(255, 255, 255, 0.7);
+    border-top: 3px solid var(--brand-gold);
+}
+
+.footer a {
+    color: var(--brand-gold);
+    text-decoration: none;
+}
+
+.footer a:hover {
+    color: var(--brand-gold-light);
+}
+
+/* Quick reference table */
+.table-sm td {
+    padding: 0.25rem 0.5rem;
+}
+
+/* Button groups */
+.btn-group-sm > .btn {
+    padding: 0.25rem 0.5rem;
+}
+
+/* Drafts list */
+#draftsList .list-group-item {
+    border-left: 0;
+    border-right: 0;
+}
+
+#draftsList .list-group-item:first-child {
+    border-top: 0;
+}
+
+/* Additional argument sections */
+.additional-argument {
+    background-color: var(--brand-gray-light);
+    padding: 1rem;
+    border-radius: 0.375rem;
+    border: 1px solid #dee2e6;
+}
+
+/* Loading spinner */
+.spinner-border {
+    width: 2rem;
+    height: 2rem;
+    color: var(--brand-navy);
+}
+
+/* API Status card */
+#apiStatusCard {
+    border-left-width: 3px;
+}
+
+#apiStatusCard.border-success {
+    border-left-color: #198754 !important;
+}
+
+#apiStatusCard.border-warning {
+    border-left-color: var(--brand-gold) !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 991.98px) {
+    .col-lg-4,
+    .col-lg-8 {
+        margin-bottom: 1rem;
+    }
+}
+
+/* Print styles - hide navigation when printing */
+@media print {
+    .navbar,
+    .footer,
+    .btn {
+        display: none !important;
+    }
+
+    .card {
+        box-shadow: none;
+        border: none;
+    }
+}
+
+/* Custom scrollbar for lists */
+.list-group[style*="overflow-y: auto"] {
+    scrollbar-width: thin;
+}
+
+.list-group[style*="overflow-y: auto"]::-webkit-scrollbar {
+    width: 6px;
+}
+
+.list-group[style*="overflow-y: auto"]::-webkit-scrollbar-thumb {
+    background-color: var(--brand-navy-light);
+    border-radius: 3px;
+}
+
+.list-group[style*="overflow-y: auto"]::-webkit-scrollbar-thumb:hover {
+    background-color: var(--brand-navy);
+}
+
+/* Badge styling */
+.badge {
+    font-weight: 500;
+}
+
+.badge.bg-navy {
+    background-color: var(--brand-navy) !important;
+}
+
+/* Table in modal */
+.modal-body .table td {
+    vertical-align: middle;
+}
+
+/* Tooltip styling */
+[data-bs-toggle="tooltip"] {
+    cursor: help;
+}
+
+/* Powered by badge */
+.powered-by {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.powered-by a {
+    color: var(--brand-gold) !important;
+    font-weight: 500;
+}
+
+/* Hero section for potential landing */
+.hero-section {
+    background: linear-gradient(135deg, var(--brand-navy) 0%, var(--brand-navy-light) 100%);
+    color: white;
+    padding: 2rem 0;
+}
+
+.hero-section h1 {
+    font-weight: 700;
+}
+
+.hero-section .lead {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+/* Toast customization */
+.toast-header.bg-navy {
+    background-color: var(--brand-navy) !important;
+    color: white;
+}

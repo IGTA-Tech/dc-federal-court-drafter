@@ -1,0 +1,567 @@
+{% extends "base.html" %}
+
+{% block title %}Court Research - DC Court Drafter{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Left Column: Search -->
+    <div class="col-lg-4">
+        <!-- API Status -->
+        <div class="card mb-3" id="apiStatusCard">
+            <div class="card-body py-2">
+                <span id="apiStatus">Checking API status...</span>
+            </div>
+        </div>
+
+        <!-- Search Form -->
+        <div class="card mb-3">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="bi bi-search"></i> Search Cases</h6>
+            </div>
+            <div class="card-body">
+                <form id="searchForm">
+                    <div class="mb-3">
+                        <label class="form-label">Search Query</label>
+                        <input type="text" class="form-control" id="searchQuery" placeholder="Case name, keywords...">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Search Type</label>
+                        <select class="form-select" id="searchType">
+                            <option value="o">Opinions (Case Law)</option>
+                            <option value="r">RECAP Documents</option>
+                            <option value="d">Dockets</option>
+                        </select>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <label class="form-label">Filed After</label>
+                            <input type="date" class="form-control" id="filedAfter">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label">Filed Before</label>
+                            <input type="date" class="form-control" id="filedBefore">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Judge</label>
+                        <input type="text" class="form-control" id="judgeFilter" placeholder="Judge name">
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-search"></i> Search
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Citation Lookup -->
+        <div class="card mb-3">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="bi bi-bookmark"></i> Citation Lookup</h6>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <input type="text" class="form-control" id="citationInput" placeholder="e.g., 550 U.S. 544">
+                </div>
+                <button type="button" class="btn btn-outline-primary w-100" onclick="lookupCitation()">
+                    <i class="bi bi-search"></i> Look Up
+                </button>
+            </div>
+        </div>
+
+        <!-- Docket Lookup -->
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="bi bi-folder"></i> Docket Lookup</h6>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <input type="text" class="form-control" id="docketNumber" placeholder="Docket number or ID">
+                </div>
+                <button type="button" class="btn btn-outline-primary w-100" onclick="lookupDocket()">
+                    <i class="bi bi-folder2-open"></i> Get Docket
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Results -->
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="mb-0"><i class="bi bi-list"></i> Results</h6>
+                <span id="resultCount" class="badge bg-secondary">0 results</span>
+            </div>
+            <div class="card-body" id="resultsContainer" style="min-height: 400px;">
+                <p class="text-muted text-center mt-5">Enter a search query to find DC District Court cases.</p>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <nav id="pagination" class="mt-3" style="display: none;">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" id="prevPage">
+                    <a class="page-link" href="#" onclick="changePage('prev')">Previous</a>
+                </li>
+                <li class="page-item" id="nextPage">
+                    <a class="page-link" href="#" onclick="changePage('next')">Next</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<!-- Case Detail Modal -->
+<div class="modal fade" id="caseModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="caseModalTitle">Case Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="caseModalBody">
+                Loading...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" onclick="exportToGenerator()">
+                    <i class="bi bi-arrow-right-square"></i> Export to Document Generator
+                </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let currentPage = 1;
+let nextPageUrl = null;
+let prevPageUrl = null;
+let currentCaseData = null;
+
+// Check API status on load
+document.addEventListener('DOMContentLoaded', function() {
+    checkApiStatus();
+
+    // Search form submission
+    document.getElementById('searchForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        searchCases();
+    });
+});
+
+// Check CourtListener API status
+async function checkApiStatus() {
+    try {
+        const response = await fetch('/api/research/status');
+        const data = await response.json();
+        const statusCard = document.getElementById('apiStatusCard');
+        const statusText = document.getElementById('apiStatus');
+
+        if (data.configured) {
+            statusCard.classList.remove('border-warning');
+            statusCard.classList.add('border-success');
+            statusText.innerHTML = '<i class="bi bi-check-circle text-success"></i> CourtListener API configured';
+        } else {
+            statusCard.classList.add('border-warning');
+            statusText.innerHTML = '<i class="bi bi-exclamation-triangle text-warning"></i> ' + data.message;
+        }
+    } catch (error) {
+        console.error('Error checking API status:', error);
+    }
+}
+
+// Search cases
+async function searchCases() {
+    const query = document.getElementById('searchQuery').value;
+    if (!query) {
+        alert('Please enter a search query');
+        return;
+    }
+
+    const params = new URLSearchParams({
+        q: query,
+        type: document.getElementById('searchType').value
+    });
+
+    const filedAfter = document.getElementById('filedAfter').value;
+    const filedBefore = document.getElementById('filedBefore').value;
+    const judge = document.getElementById('judgeFilter').value;
+
+    if (filedAfter) params.append('filed_after', filedAfter);
+    if (filedBefore) params.append('filed_before', filedBefore);
+    if (judge) params.append('judge', judge);
+
+    showLoading();
+
+    try {
+        const response = await fetch(`/api/research/cases?${params}`);
+        const data = await response.json();
+
+        if (data.error) {
+            showError(data.error);
+            return;
+        }
+
+        displayResults(data);
+
+    } catch (error) {
+        showError(error.message);
+    }
+}
+
+// Display search results
+function displayResults(data) {
+    const container = document.getElementById('resultsContainer');
+    const countBadge = document.getElementById('resultCount');
+
+    countBadge.textContent = `${data.count} results`;
+
+    if (data.results.length === 0) {
+        container.innerHTML = '<p class="text-muted text-center mt-5">No results found.</p>';
+        document.getElementById('pagination').style.display = 'none';
+        return;
+    }
+
+    let html = '<div class="list-group">';
+    data.results.forEach(result => {
+        const citations = result.citations ? result.citations.join(', ') : '';
+        const snippet = result.snippet ? result.snippet.substring(0, 200) + '...' : '';
+
+        html += `
+            <div class="list-group-item list-group-item-action" onclick="showCaseDetail(${result.docket_id || result.id}, '${result.case_name.replace(/'/g, "\\'")}')">
+                <div class="d-flex justify-content-between align-items-start">
+                    <h6 class="mb-1">${result.case_name}</h6>
+                    ${result.cite_count > 0 ? `<span class="badge bg-info">${result.cite_count} citations</span>` : ''}
+                </div>
+                <p class="mb-1 small">
+                    <strong>Court:</strong> ${result.court} |
+                    <strong>Filed:</strong> ${result.date_filed || 'N/A'}
+                    ${result.judge ? ` | <strong>Judge:</strong> ${result.judge}` : ''}
+                </p>
+                ${citations ? `<p class="mb-1 small text-muted"><strong>Citation:</strong> ${citations}</p>` : ''}
+                ${snippet ? `<p class="mb-0 small text-muted">${snippet}</p>` : ''}
+                <div class="mt-2">
+                    <a href="${result.url}" target="_blank" class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation();">
+                        <i class="bi bi-box-arrow-up-right"></i> View on CourtListener
+                    </a>
+                </div>
+            </div>
+        `;
+    });
+    html += '</div>';
+
+    container.innerHTML = html;
+
+    // Handle pagination
+    nextPageUrl = data.next;
+    prevPageUrl = data.previous;
+    document.getElementById('pagination').style.display = (nextPageUrl || prevPageUrl) ? 'block' : 'none';
+    document.getElementById('prevPage').classList.toggle('disabled', !prevPageUrl);
+    document.getElementById('nextPage').classList.toggle('disabled', !nextPageUrl);
+}
+
+// Show case detail
+async function showCaseDetail(id, name) {
+    const modal = new bootstrap.Modal(document.getElementById('caseModal'));
+    document.getElementById('caseModalTitle').textContent = name;
+    document.getElementById('caseModalBody').innerHTML = '<div class="text-center"><div class="spinner-border"></div><p>Loading...</p></div>';
+    modal.show();
+
+    try {
+        // Try to get docket info
+        const response = await fetch(`/api/research/docket/${id}`);
+        const data = await response.json();
+
+        if (data.error) {
+            document.getElementById('caseModalBody').innerHTML = `<div class="alert alert-warning">${data.error}</div>`;
+            return;
+        }
+
+        currentCaseData = data;
+
+        let html = `
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>Case Information</h6>
+                    <table class="table table-sm">
+                        <tr><td><strong>Case Name</strong></td><td>${data.docket.case_name}</td></tr>
+                        <tr><td><strong>Docket Number</strong></td><td>${data.docket.docket_number}</td></tr>
+                        <tr><td><strong>Date Filed</strong></td><td>${data.docket.date_filed || 'N/A'}</td></tr>
+                        <tr><td><strong>Date Terminated</strong></td><td>${data.docket.date_terminated || 'Open'}</td></tr>
+                        <tr><td><strong>Judge</strong></td><td>${data.docket.assigned_to_str || 'N/A'}</td></tr>
+                        <tr><td><strong>Nature of Suit</strong></td><td>${data.docket.nature_of_suit || 'N/A'}</td></tr>
+                        <tr><td><strong>Cause</strong></td><td>${data.docket.cause || 'N/A'}</td></tr>
+                    </table>
+                </div>
+                <div class="col-md-6">
+                    <h6>Actions</h6>
+                    <button class="btn btn-outline-primary btn-sm mb-2 w-100" onclick="loadDocketEntries(${id})">
+                        <i class="bi bi-list-ul"></i> Load Docket Entries
+                    </button>
+                    <button class="btn btn-outline-primary btn-sm mb-2 w-100" onclick="loadParties(${id})">
+                        <i class="bi bi-people"></i> Load Parties & Attorneys
+                    </button>
+                </div>
+            </div>
+            <div id="caseDetails"></div>
+        `;
+
+        document.getElementById('caseModalBody').innerHTML = html;
+
+    } catch (error) {
+        document.getElementById('caseModalBody').innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
+    }
+}
+
+// Load docket entries
+async function loadDocketEntries(docketId) {
+    const detailsDiv = document.getElementById('caseDetails');
+    detailsDiv.innerHTML = '<div class="text-center mt-3"><div class="spinner-border spinner-border-sm"></div> Loading entries...</div>';
+
+    try {
+        const response = await fetch(`/api/research/docket/${docketId}/entries`);
+        const data = await response.json();
+
+        let html = '<h6 class="mt-4">Docket Entries</h6>';
+
+        if (data.entries && data.entries.length > 0) {
+            html += '<div class="list-group list-group-flush" style="max-height: 300px; overflow-y: auto;">';
+            data.entries.forEach(entry => {
+                const docCount = entry.recap_documents ? entry.recap_documents.length : 0;
+                html += `
+                    <div class="list-group-item py-2">
+                        <div class="d-flex justify-content-between">
+                            <strong>${entry.entry_number ? '#' + entry.entry_number : ''}</strong>
+                            <small class="text-muted">${entry.date_filed || ''}</small>
+                        </div>
+                        <p class="mb-0 small">${entry.description}</p>
+                        ${docCount > 0 ? `<span class="badge bg-secondary">${docCount} document(s)</span>` : ''}
+                    </div>
+                `;
+            });
+            html += '</div>';
+        } else {
+            html += '<p class="text-muted">No entries available.</p>';
+        }
+
+        detailsDiv.innerHTML = html;
+
+    } catch (error) {
+        detailsDiv.innerHTML = `<div class="alert alert-danger mt-3">Error: ${error.message}</div>`;
+    }
+}
+
+// Load parties
+async function loadParties(docketId) {
+    const detailsDiv = document.getElementById('caseDetails');
+    detailsDiv.innerHTML = '<div class="text-center mt-3"><div class="spinner-border spinner-border-sm"></div> Loading parties...</div>';
+
+    try {
+        const response = await fetch(`/api/research/parties/${docketId}`);
+        const data = await response.json();
+
+        // Store for export
+        if (currentCaseData) {
+            currentCaseData.parties = data;
+        }
+
+        let html = '<h6 class="mt-4">Parties & Attorneys</h6>';
+
+        if (data.extracted) {
+            if (data.extracted.plaintiffs.length > 0) {
+                html += '<p><strong>Plaintiffs:</strong> ' + data.extracted.plaintiffs.join(', ') + '</p>';
+            }
+            if (data.extracted.defendants.length > 0) {
+                html += '<p><strong>Defendants:</strong> ' + data.extracted.defendants.join(', ') + '</p>';
+            }
+        }
+
+        if (data.extracted && data.extracted.attorneys.length > 0) {
+            html += '<h6>Attorneys</h6><div class="list-group list-group-flush" style="max-height: 200px; overflow-y: auto;">';
+            data.extracted.attorneys.forEach(atty => {
+                html += `
+                    <div class="list-group-item py-2">
+                        <strong>${atty.name}</strong>
+                        <small class="d-block text-muted">Representing: ${atty.represents} (${atty.party_type})</small>
+                        ${atty.email ? `<small class="d-block">Email: ${atty.email}</small>` : ''}
+                        ${atty.phone ? `<small class="d-block">Phone: ${atty.phone}</small>` : ''}
+                    </div>
+                `;
+            });
+            html += '</div>';
+        }
+
+        detailsDiv.innerHTML = html;
+
+    } catch (error) {
+        detailsDiv.innerHTML = `<div class="alert alert-danger mt-3">Error: ${error.message}</div>`;
+    }
+}
+
+// Export to document generator
+function exportToGenerator() {
+    if (!currentCaseData) {
+        alert('No case data to export');
+        return;
+    }
+
+    // Build URL with parameters
+    const params = new URLSearchParams();
+    params.append('case_number', currentCaseData.docket.docket_number || '');
+    params.append('judge_name', currentCaseData.docket.assigned_to_str || '');
+
+    // Extract plaintiff and defendant from case name if possible
+    const caseName = currentCaseData.docket.case_name || '';
+    const vsMatch = caseName.match(/(.+?)\s+v\.?\s+(.+)/i);
+    if (vsMatch) {
+        params.append('plaintiff', vsMatch[1].trim());
+        params.append('defendant', vsMatch[2].trim());
+    }
+
+    // Redirect to generator with params
+    window.location.href = '/generator?' + params.toString();
+}
+
+// Citation lookup
+async function lookupCitation() {
+    const citation = document.getElementById('citationInput').value;
+    if (!citation) {
+        alert('Please enter a citation');
+        return;
+    }
+
+    showLoading();
+
+    try {
+        const response = await fetch(`/api/research/citation/${encodeURIComponent(citation)}`);
+        const data = await response.json();
+
+        if (data.error) {
+            showError(data.error);
+            return;
+        }
+
+        // Display results
+        const container = document.getElementById('resultsContainer');
+        document.getElementById('resultCount').textContent = `${data.count} results`;
+
+        if (data.results.length === 0) {
+            container.innerHTML = `<p class="text-muted text-center mt-5">No results found for citation: ${citation}</p>`;
+            return;
+        }
+
+        let html = '<div class="list-group">';
+        data.results.forEach(result => {
+            html += `
+                <div class="list-group-item">
+                    <h6 class="mb-1">${result.case_name}</h6>
+                    <p class="mb-1 small">
+                        <strong>Date:</strong> ${result.date_filed || 'N/A'} |
+                        <strong>Status:</strong> ${result.precedential_status || 'N/A'}
+                    </p>
+                    ${result.summary ? `<p class="mb-0 small text-muted">${result.summary.substring(0, 300)}...</p>` : ''}
+                </div>
+            `;
+        });
+        html += '</div>';
+        container.innerHTML = html;
+
+    } catch (error) {
+        showError(error.message);
+    }
+}
+
+// Docket lookup
+async function lookupDocket() {
+    const input = document.getElementById('docketNumber').value;
+    if (!input) {
+        alert('Please enter a docket number or ID');
+        return;
+    }
+
+    // If it looks like a numeric ID, look up directly
+    if (/^\d+$/.test(input)) {
+        showCaseDetail(parseInt(input), 'Docket ' + input);
+    } else {
+        // Search by docket number
+        showLoading();
+        try {
+            const response = await fetch(`/api/research/dockets?docket_number=${encodeURIComponent(input)}`);
+            const data = await response.json();
+
+            if (data.error) {
+                showError(data.error);
+                return;
+            }
+
+            displayDocketResults(data);
+
+        } catch (error) {
+            showError(error.message);
+        }
+    }
+}
+
+// Display docket results
+function displayDocketResults(data) {
+    const container = document.getElementById('resultsContainer');
+    document.getElementById('resultCount').textContent = `${data.count} results`;
+
+    if (data.results.length === 0) {
+        container.innerHTML = '<p class="text-muted text-center mt-5">No dockets found.</p>';
+        return;
+    }
+
+    let html = '<div class="list-group">';
+    data.results.forEach(result => {
+        const status = result.date_terminated ? 'Closed' : 'Open';
+        const statusClass = result.date_terminated ? 'text-muted' : 'text-success';
+
+        html += `
+            <div class="list-group-item list-group-item-action" onclick="showCaseDetail(${result.id}, '${result.case_name.replace(/'/g, "\\'")}')">
+                <div class="d-flex justify-content-between align-items-start">
+                    <h6 class="mb-1">${result.case_name}</h6>
+                    <span class="badge ${result.date_terminated ? 'bg-secondary' : 'bg-success'}">${status}</span>
+                </div>
+                <p class="mb-1 small">
+                    <strong>Docket:</strong> ${result.docket_number} |
+                    <strong>Filed:</strong> ${result.date_filed || 'N/A'}
+                </p>
+                <p class="mb-0 small text-muted">
+                    ${result.judge ? `<strong>Judge:</strong> ${result.judge}` : ''}
+                    ${result.nature_of_suit ? ` | <strong>NOS:</strong> ${result.nature_of_suit}` : ''}
+                </p>
+            </div>
+        `;
+    });
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+// Pagination
+function changePage(direction) {
+    // Not implemented - would need to handle pagination URLs from API
+    alert('Pagination not yet implemented');
+}
+
+// Helper functions
+function showLoading() {
+    document.getElementById('resultsContainer').innerHTML = `
+        <div class="text-center mt-5">
+            <div class="spinner-border text-primary" role="status"></div>
+            <p class="mt-2">Searching...</p>
+        </div>
+    `;
+}
+
+function showError(message) {
+    document.getElementById('resultsContainer').innerHTML = `
+        <div class="alert alert-danger mt-3">
+            <i class="bi bi-exclamation-triangle"></i> Error: ${message}
+        </div>
+    `;
+    document.getElementById('resultCount').textContent = '0 results';
+}
+</script>
+{% endblock %}
