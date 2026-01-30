@@ -38,6 +38,11 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'upload' %}active{% endif %}" href="/upload">
+                            <i class="bi bi-upload"></i> Upload & Reformat
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link {% if request.endpoint == 'research' %}active{% endif %}" href="/research">
                             <i class="bi bi-search"></i> Court Research
                         </a>

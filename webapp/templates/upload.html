@@ -1,0 +1,595 @@
+{% extends "base.html" %}
+
+{% block title %}Upload & Reformat - DC Court Drafter{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Left Column: Upload & Settings -->
+    <div class="col-lg-4">
+        <!-- Upload Zone -->
+        <div class="card mb-3">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="bi bi-upload"></i> Upload Document</h6>
+            </div>
+            <div class="card-body">
+                <div id="dropZone" class="upload-zone text-center p-4 border border-2 border-dashed rounded mb-3">
+                    <i class="bi bi-file-earmark-word display-4 text-primary"></i>
+                    <p class="mt-2 mb-1">Drag & drop your DOCX file here</p>
+                    <p class="small text-muted mb-2">or</p>
+                    <input type="file" id="fileInput" class="d-none" accept=".docx">
+                    <button type="button" class="btn btn-outline-primary" onclick="document.getElementById('fileInput').click()">
+                        <i class="bi bi-folder2-open"></i> Browse Files
+                    </button>
+                    <p class="small text-muted mt-2 mb-0">Supported: DOCX (Max 16MB)</p>
+                </div>
+                <div id="fileInfo" class="alert alert-info d-none">
+                    <i class="bi bi-file-earmark-check"></i>
+                    <span id="fileName"></span>
+                    <button type="button" class="btn-close btn-sm float-end" onclick="clearFile()"></button>
+                </div>
+                <div id="uploadProgress" class="progress d-none mb-3">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 100%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Document Type -->
+        <div class="card mb-3">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="bi bi-file-text"></i> Document Type</h6>
+            </div>
+            <div class="card-body">
+                <select class="form-select" id="docType">
+                    <option value="motion_to_dismiss">Motion to Dismiss</option>
+                    <option value="motion_summary_judgment">Motion for Summary Judgment</option>
+                    <option value="motion_to_compel">Motion to Compel</option>
+                    <option value="motion_preliminary_injunction">Motion for Preliminary Injunction</option>
+                    <option value="motion_tro">Motion for TRO</option>
+                    <option value="motion_leave_amend">Motion for Leave to Amend</option>
+                    <option value="motion_extend_time">Motion to Extend Time</option>
+                    <option value="opposition">Opposition</option>
+                    <option value="reply">Reply</option>
+                    <option value="complaint">Complaint</option>
+                    <option value="answer">Answer</option>
+                </select>
+                <div class="mt-2">
+                    <label class="form-label small">Custom Title (optional)</label>
+                    <input type="text" class="form-control form-control-sm" id="customTitle" placeholder="e.g., MOTION TO COMPEL DISCOVERY">
+                </div>
+            </div>
+        </div>
+
+        <!-- Case Information -->
+        <div class="card mb-3">
+            <div class="card-header">
+                <h6 class="mb-0"><i class="bi bi-info-circle"></i> Case Information</h6>
+            </div>
+            <div class="card-body">
+                <div class="mb-2">
+                    <label class="form-label small">Case Number</label>
+                    <input type="text" class="form-control form-control-sm" id="caseNumber" placeholder="1:24-cv-00123-ABC">
+                </div>
+                <div class="mb-2">
+                    <label class="form-label small">Plaintiff</label>
+                    <input type="text" class="form-control form-control-sm" id="plaintiff" placeholder="Plaintiff Name">
+                </div>
+                <div class="mb-2">
+                    <label class="form-label small">Defendant</label>
+                    <input type="text" class="form-control form-control-sm" id="defendant" placeholder="Defendant Name">
+                </div>
+                <div class="mb-2">
+                    <label class="form-label small">Judge</label>
+                    <input type="text" class="form-control form-control-sm" id="judgeName" placeholder="Judge Name">
+                </div>
+                <div class="mb-0">
+                    <label class="form-label small">Party Represented</label>
+                    <select class="form-select form-select-sm" id="partyRepresented">
+                        <option value="Plaintiff">Plaintiff</option>
+                        <option value="Defendant">Defendant</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Attorney Information (Collapsed by default) -->
+        <div class="card mb-3">
+            <div class="card-header" data-bs-toggle="collapse" data-bs-target="#attorneyCollapse" style="cursor: pointer;">
+                <h6 class="mb-0">
+                    <i class="bi bi-person-badge"></i> Attorney Information
+                    <i class="bi bi-chevron-down float-end"></i>
+                </h6>
+            </div>
+            <div class="collapse" id="attorneyCollapse">
+                <div class="card-body">
+                    <div class="mb-2">
+                        <label class="form-label small">Attorney Name</label>
+                        <input type="text" class="form-control form-control-sm" id="attorneyName" placeholder="Jane Smith">
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label small">Firm</label>
+                        <input type="text" class="form-control form-control-sm" id="attorneyFirm" placeholder="Smith & Associates LLP">
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label small">Address</label>
+                        <input type="text" class="form-control form-control-sm" id="attorneyAddress" placeholder="123 Main Street">
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label small">City, State ZIP</label>
+                        <input type="text" class="form-control form-control-sm" id="attorneyCityStateZip" placeholder="Washington, DC 20001">
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label small">Phone</label>
+                        <input type="text" class="form-control form-control-sm" id="attorneyPhone" placeholder="(202) 555-1234">
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label small">Email</label>
+                        <input type="email" class="form-control form-control-sm" id="attorneyEmail" placeholder="jsmith@lawfirm.com">
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label small">DC Bar Number</label>
+                        <input type="text" class="form-control form-control-sm" id="attorneyBarNumber" placeholder="123456">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Options -->
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="includeCertificate" checked>
+                    <label class="form-check-label" for="includeCertificate">
+                        Include Certificate of Service
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="d-grid gap-2">
+            <button type="button" class="btn btn-primary btn-lg" id="reformatBtn" onclick="reformatDocument()" disabled>
+                <i class="bi bi-file-earmark-arrow-down"></i> Reformat & Download
+            </button>
+            <button type="button" class="btn btn-outline-secondary" onclick="previewDocument()" id="previewBtn" disabled>
+                <i class="bi bi-eye"></i> Preview
+            </button>
+        </div>
+    </div>
+
+    <!-- Right Column: Content Preview/Editor -->
+    <div class="col-lg-8">
+        <!-- Extracted Content Card -->
+        <div class="card mb-3" id="extractedCard" style="display: none;">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="mb-0"><i class="bi bi-file-text"></i> Extracted Content</h6>
+                <span class="badge bg-secondary" id="wordCount">0 words</span>
+            </div>
+            <div class="card-body">
+                <!-- Tabs for sections -->
+                <ul class="nav nav-tabs" id="sectionTabs" role="tablist">
+                    <li class="nav-item">
+                        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#introTab">Introduction</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#factsTab">Facts</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#legalTab">Legal Standard</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#argTab">Argument</button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#conclusionTab">Conclusion</button>
+                    </li>
+                </ul>
+                <div class="tab-content pt-3" id="sectionTabContent">
+                    <div class="tab-pane fade show active" id="introTab">
+                        <textarea class="form-control section-editor" id="introContent" rows="8" placeholder="Introduction content will appear here..."></textarea>
+                    </div>
+                    <div class="tab-pane fade" id="factsTab">
+                        <textarea class="form-control section-editor" id="factsContent" rows="8" placeholder="Factual background content will appear here..."></textarea>
+                    </div>
+                    <div class="tab-pane fade" id="legalTab">
+                        <textarea class="form-control section-editor" id="legalContent" rows="8" placeholder="Legal standard content will appear here..."></textarea>
+                    </div>
+                    <div class="tab-pane fade" id="argTab">
+                        <textarea class="form-control section-editor" id="argContent" rows="8" placeholder="Argument content will appear here..."></textarea>
+                    </div>
+                    <div class="tab-pane fade" id="conclusionTab">
+                        <textarea class="form-control section-editor" id="conclusionContent" rows="8" placeholder="Conclusion content will appear here..."></textarea>
+                    </div>
+                </div>
+                <div class="mt-2 text-muted small">
+                    <i class="bi bi-info-circle"></i> You can edit the extracted content before reformatting.
+                </div>
+            </div>
+        </div>
+
+        <!-- Initial Instructions -->
+        <div class="card" id="instructionsCard">
+            <div class="card-body text-center py-5">
+                <i class="bi bi-file-earmark-arrow-up display-1 text-muted"></i>
+                <h4 class="mt-3">Upload & Reformat Documents</h4>
+                <p class="text-muted">
+                    Upload an existing DOCX document and automatically reformat it<br>
+                    to DC District Court standards (Times New Roman 12pt, double-spaced, 1" margins).
+                </p>
+                <div class="row justify-content-center mt-4">
+                    <div class="col-md-8">
+                        <div class="d-flex justify-content-around text-start">
+                            <div>
+                                <h6><i class="bi bi-1-circle text-primary"></i> Upload</h6>
+                                <p class="small text-muted">Upload your DOCX file</p>
+                            </div>
+                            <div>
+                                <h6><i class="bi bi-2-circle text-primary"></i> Review</h6>
+                                <p class="small text-muted">Review extracted sections</p>
+                            </div>
+                            <div>
+                                <h6><i class="bi bi-3-circle text-primary"></i> Download</h6>
+                                <p class="small text-muted">Get formatted document</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr class="my-4">
+                <h6>Formatting Applied:</h6>
+                <div class="row justify-content-center">
+                    <div class="col-md-6">
+                        <ul class="list-unstyled text-start small">
+                            <li><i class="bi bi-check-circle text-success"></i> Times New Roman, 12pt font</li>
+                            <li><i class="bi bi-check-circle text-success"></i> Double-spaced throughout</li>
+                            <li><i class="bi bi-check-circle text-success"></i> 1-inch margins on all sides</li>
+                            <li><i class="bi bi-check-circle text-success"></i> Proper DC court caption format</li>
+                            <li><i class="bi bi-check-circle text-success"></i> Page numbers at bottom center</li>
+                            <li><i class="bi bi-check-circle text-success"></i> Signature block per LCvR 5.1(d)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Preview Modal -->
+        <div class="modal fade" id="previewModal" tabindex="-1">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Document Preview</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body" id="previewContent" style="max-height: 70vh; overflow-y: auto;">
+                        <!-- Preview content will be inserted here -->
+                    </div>
+                    <div class="modal-footer">
+                        <div class="me-auto">
+                            <span class="badge bg-light text-dark me-2">Times New Roman 12pt</span>
+                            <span class="badge bg-light text-dark me-2">Double-spaced</span>
+                            <span class="badge bg-light text-dark">1" margins</span>
+                        </div>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" onclick="reformatDocument()">
+                            <i class="bi bi-download"></i> Download
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .upload-zone {
+        background-color: #f8f9fa;
+        transition: all 0.3s ease;
+    }
+    .upload-zone:hover, .upload-zone.dragover {
+        background-color: #e9ecef;
+        border-color: #0d6efd !important;
+    }
+    .upload-zone.dragover {
+        transform: scale(1.02);
+    }
+    .section-editor {
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 12pt;
+        line-height: 2;
+    }
+    .preview-section {
+        font-family: 'Times New Roman', Times, serif;
+        font-size: 12pt;
+        line-height: 2;
+        margin-bottom: 1rem;
+        padding: 1rem;
+        border: 1px solid #dee2e6;
+        border-radius: 0.25rem;
+    }
+    .preview-heading {
+        text-align: center;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+    .preview-caption {
+        font-family: 'Courier New', monospace;
+        font-size: 10pt;
+        white-space: pre-wrap;
+        line-height: 1.4;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let extractedData = null;
+
+// Initialize drag and drop
+document.addEventListener('DOMContentLoaded', function() {
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+
+    // Drag events
+    dropZone.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        dropZone.classList.add('dragover');
+    });
+
+    dropZone.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        dropZone.classList.remove('dragover');
+    });
+
+    dropZone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        dropZone.classList.remove('dragover');
+
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            handleFile(files[0]);
+        }
+    });
+
+    // File input change
+    fileInput.addEventListener('change', function() {
+        if (this.files.length > 0) {
+            handleFile(this.files[0]);
+        }
+    });
+});
+
+// Handle file upload
+function handleFile(file) {
+    // Validate file type
+    if (!file.name.toLowerCase().endsWith('.docx')) {
+        alert('Please upload a DOCX file.');
+        return;
+    }
+
+    // Validate file size
+    if (file.size > 16 * 1024 * 1024) {
+        alert('File is too large. Maximum size is 16MB.');
+        return;
+    }
+
+    // Show file info
+    document.getElementById('fileName').textContent = file.name;
+    document.getElementById('fileInfo').classList.remove('d-none');
+    document.getElementById('uploadProgress').classList.remove('d-none');
+
+    // Upload file
+    const formData = new FormData();
+    formData.append('file', file);
+
+    fetch('/api/upload', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+            throw new Error('Server returned an invalid response.');
+        }
+        return response.json();
+    })
+    .then(data => {
+        document.getElementById('uploadProgress').classList.add('d-none');
+
+        if (data.error) {
+            alert('Error: ' + data.error);
+            clearFile();
+            return;
+        }
+
+        // Store extracted data
+        extractedData = data.extracted;
+
+        // Populate case info if detected
+        if (extractedData.case_info) {
+            const info = extractedData.case_info;
+            if (info.case_number) document.getElementById('caseNumber').value = info.case_number;
+            if (info.plaintiff) document.getElementById('plaintiff').value = info.plaintiff;
+            if (info.defendant) document.getElementById('defendant').value = info.defendant;
+            if (info.judge_name) document.getElementById('judgeName').value = info.judge_name;
+        }
+
+        // Populate sections
+        const sections = extractedData.sections;
+        document.getElementById('introContent').value = sections.introduction || '';
+        document.getElementById('factsContent').value = sections.facts || '';
+        document.getElementById('legalContent').value = sections.legal_standard || '';
+        document.getElementById('argContent').value = sections.argument || '';
+        document.getElementById('conclusionContent').value = sections.conclusion || '';
+
+        // Update word count
+        document.getElementById('wordCount').textContent = extractedData.word_count + ' words';
+
+        // Show extracted content card, hide instructions
+        document.getElementById('extractedCard').style.display = 'block';
+        document.getElementById('instructionsCard').style.display = 'none';
+
+        // Enable buttons
+        document.getElementById('reformatBtn').disabled = false;
+        document.getElementById('previewBtn').disabled = false;
+    })
+    .catch(error => {
+        document.getElementById('uploadProgress').classList.add('d-none');
+        alert('Error uploading file: ' + error.message);
+        clearFile();
+    });
+}
+
+// Clear file
+function clearFile() {
+    document.getElementById('fileInput').value = '';
+    document.getElementById('fileInfo').classList.add('d-none');
+    document.getElementById('uploadProgress').classList.add('d-none');
+    extractedData = null;
+
+    // Hide extracted content card, show instructions
+    document.getElementById('extractedCard').style.display = 'none';
+    document.getElementById('instructionsCard').style.display = 'block';
+
+    // Disable buttons
+    document.getElementById('reformatBtn').disabled = true;
+    document.getElementById('previewBtn').disabled = true;
+}
+
+// Get current data from form
+function getFormData() {
+    return {
+        sections: {
+            introduction: document.getElementById('introContent').value,
+            facts: document.getElementById('factsContent').value,
+            legal_standard: document.getElementById('legalContent').value,
+            argument: document.getElementById('argContent').value,
+            conclusion: document.getElementById('conclusionContent').value
+        },
+        doc_type: document.getElementById('docType').value,
+        case_info: {
+            case_number: document.getElementById('caseNumber').value,
+            plaintiff: document.getElementById('plaintiff').value,
+            defendant: document.getElementById('defendant').value,
+            judge_name: document.getElementById('judgeName').value,
+            party_represented: document.getElementById('partyRepresented').value,
+            custom_title: document.getElementById('customTitle').value
+        },
+        attorney_info: {
+            name: document.getElementById('attorneyName').value,
+            firm: document.getElementById('attorneyFirm').value,
+            address: document.getElementById('attorneyAddress').value,
+            city_state_zip: document.getElementById('attorneyCityStateZip').value,
+            phone: document.getElementById('attorneyPhone').value,
+            email: document.getElementById('attorneyEmail').value,
+            dc_bar_number: document.getElementById('attorneyBarNumber').value
+        },
+        include_certificate: document.getElementById('includeCertificate').checked
+    };
+}
+
+// Reformat and download document
+function reformatDocument() {
+    const data = getFormData();
+
+    // Check if attorney info has at least name
+    if (!data.attorney_info.name) {
+        data.attorney_info = null;
+    }
+
+    // Show loading
+    const btn = document.getElementById('reformatBtn');
+    const originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Processing...';
+
+    fetch('/api/upload/reformat', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(data => {
+                throw new Error(data.error || 'Failed to reformat document');
+            });
+        }
+        return response.blob();
+    })
+    .then(blob => {
+        // Create download link
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `reformatted_${document.getElementById('docType').value}_${Date.now()}.docx`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        a.remove();
+
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+    })
+    .catch(error => {
+        alert('Error: ' + error.message);
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+    });
+}
+
+// Preview document
+function previewDocument() {
+    const data = getFormData();
+
+    if (!data.attorney_info.name) {
+        data.attorney_info = null;
+    }
+
+    fetch('/api/upload/preview', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            alert('Error: ' + data.error);
+            return;
+        }
+
+        // Build preview HTML
+        let html = '';
+        data.preview.forEach(part => {
+            if (part.type === 'caption') {
+                html += `<div class="preview-section preview-caption">${escapeHtml(part.content)}</div>`;
+            } else if (part.type === 'title') {
+                html += `<div class="preview-section"><div class="preview-heading">${escapeHtml(part.content)}</div></div>`;
+            } else if (part.type === 'section') {
+                html += `<div class="preview-section">
+                    <div class="preview-heading">${escapeHtml(part.title)}</div>
+                    <p>${escapeHtml(part.content)}</p>
+                </div>`;
+            } else if (part.type === 'signature') {
+                html += `<div class="preview-section" style="text-align: right; white-space: pre-wrap;">${escapeHtml(part.content)}</div>`;
+            }
+        });
+
+        document.getElementById('previewContent').innerHTML = html;
+        new bootstrap.Modal(document.getElementById('previewModal')).show();
+    })
+    .catch(error => {
+        alert('Error generating preview: ' + error.message);
+    });
+}
+
+// Escape HTML
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+</script>
+{% endblock %}

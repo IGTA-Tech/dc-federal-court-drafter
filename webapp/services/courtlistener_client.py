@@ -57,12 +57,43 @@ class CourtListenerClient:
         if params:
             params = {k: v for k, v in params.items() if v is not None}
 
-        response = self.session.get(url, params=params)
+        try:
+            response = self.session.get(url, params=params, timeout=30)
+        except requests.exceptions.Timeout:
+            raise Exception("Request timed out. The CourtListener API may be slow or unavailable.")
+        except requests.exceptions.ConnectionError:
+            raise Exception("Connection error. Please check your internet connection.")
+        except requests.exceptions.RequestException as e:
+            raise Exception(f"Network error: {str(e)}")
+
+        # Check content type before parsing as JSON
+        content_type = response.headers.get('Content-Type', '')
+        if 'application/json' not in content_type:
+            # API returned non-JSON (likely HTML error page)
+            if response.status_code == 401:
+                raise Exception("Authentication failed. Please check your COURTLISTENER_API_TOKEN.")
+            elif response.status_code == 403:
+                raise Exception("Access forbidden. Your API token may not have permission for this resource.")
+            elif response.status_code == 404:
+                raise Exception("Resource not found.")
+            elif response.status_code >= 500:
+                raise Exception("CourtListener server error. Please try again later.")
+            else:
+                raise Exception(f"API returned non-JSON response (status {response.status_code}). The service may be temporarily unavailable.")
 
         if not response.ok:
-            raise Exception(f"CourtListener API error ({response.status_code}): {response.text}")
+            # Try to extract error message from JSON response
+            try:
+                error_data = response.json()
+                error_msg = error_data.get('detail', error_data.get('error', str(error_data)))
+                raise Exception(f"CourtListener API error ({response.status_code}): {error_msg}")
+            except (ValueError, KeyError):
+                raise Exception(f"CourtListener API error ({response.status_code}): {response.text[:200]}")
 
-        return response.json()
+        try:
+            return response.json()
+        except ValueError as e:
+            raise Exception(f"Invalid JSON response from API: {str(e)}")
 
     # Docket Methods
     def search_dockets(self, **params) -> Dict[str, Any]:

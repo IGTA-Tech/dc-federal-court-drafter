@@ -4,6 +4,7 @@ Court Research API Endpoints
 Provides endpoints for searching court cases via CourtListener API.
 """
 import os
+import logging
 from flask import Blueprint, request, jsonify, current_app
 
 import sys
@@ -23,16 +24,45 @@ from services.courtlistener_client import (
 from config import Config
 
 research_bp = Blueprint('research', __name__, url_prefix='/api/research')
+logger = logging.getLogger(__name__)
+
+
+class APIConfigError(Exception):
+    """Raised when API is not properly configured."""
+    pass
+
+
+class APIRequestError(Exception):
+    """Raised when API request fails."""
+    pass
 
 
 def get_client():
     """Get CourtListener client instance."""
     token = Config.COURTLISTENER_API_TOKEN
     if not token:
-        raise ValueError("COURTLISTENER_API_TOKEN not configured. Set it in your .env file.")
+        raise APIConfigError("CourtListener API token not configured. Please set COURTLISTENER_API_TOKEN in your .env file.")
 
     config = CourtListenerConfig(api_token=token)
     return CourtListenerClient(config)
+
+
+def handle_api_error(e, operation="API request"):
+    """Handle API errors and return appropriate response."""
+    error_msg = str(e)
+    logger.error(f"{operation} error: {error_msg}")
+
+    # Determine appropriate status code
+    if "not configured" in error_msg.lower() or "token" in error_msg.lower():
+        return jsonify({"error": error_msg}), 401
+    elif "timed out" in error_msg.lower():
+        return jsonify({"error": "Request timed out. Please try again."}), 504
+    elif "connection" in error_msg.lower():
+        return jsonify({"error": "Could not connect to CourtListener. Please check your internet connection."}), 503
+    elif "not found" in error_msg.lower():
+        return jsonify({"error": error_msg}), 404
+    else:
+        return jsonify({"error": error_msg}), 500
 
 
 @research_bp.route('/status', methods=['GET'])
@@ -105,11 +135,12 @@ def search_cases():
             "results": formatted_results
         })
 
+    except APIConfigError as e:
+        return jsonify({"error": str(e)}), 401
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
     except Exception as e:
-        current_app.logger.error(f"Search error: {str(e)}")
-        return jsonify({"error": str(e)}), 500
+        return handle_api_error(e, "Search cases")
 
 
 @research_bp.route('/docket/<int:docket_id>', methods=['GET'])
@@ -131,11 +162,12 @@ def get_docket(docket_id):
             }
         })
 
+    except APIConfigError as e:
+        return jsonify({"error": str(e)}), 401
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
     except Exception as e:
-        current_app.logger.error(f"Get docket error: {str(e)}")
-        return jsonify({"error": str(e)}), 500
+        return handle_api_error(e, "Get docket")
 
 
 @research_bp.route('/docket/<int:docket_id>/entries', methods=['GET'])
@@ -156,11 +188,12 @@ def get_docket_entries(docket_id):
             "formatted": format_docket_entries(entries.get('results', []))
         })
 
+    except APIConfigError as e:
+        return jsonify({"error": str(e)}), 401
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
     except Exception as e:
-        current_app.logger.error(f"Get entries error: {str(e)}")
-        return jsonify({"error": str(e)}), 500
+        return handle_api_error(e, "Get docket entries")
 
 
 @research_bp.route('/parties/<int:docket_id>', methods=['GET'])
@@ -206,11 +239,12 @@ def get_parties(docket_id):
             }
         })
 
+    except APIConfigError as e:
+        return jsonify({"error": str(e)}), 401
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
     except Exception as e:
-        current_app.logger.error(f"Get parties error: {str(e)}")
-        return jsonify({"error": str(e)}), 500
+        return handle_api_error(e, "Get parties")
 
 
 @research_bp.route('/opinions', methods=['GET'])
@@ -271,11 +305,12 @@ def search_opinions():
             "results": formatted_results
         })
 
+    except APIConfigError as e:
+        return jsonify({"error": str(e)}), 401
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
     except Exception as e:
-        current_app.logger.error(f"Search opinions error: {str(e)}")
-        return jsonify({"error": str(e)}), 500
+        return handle_api_error(e, "Search opinions")
 
 
 @research_bp.route('/opinion/<int:cluster_id>', methods=['GET'])
@@ -290,11 +325,12 @@ def get_opinion(cluster_id):
             "formatted": format_opinion_cluster(cluster)
         })
 
+    except APIConfigError as e:
+        return jsonify({"error": str(e)}), 401
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
     except Exception as e:
-        current_app.logger.error(f"Get opinion error: {str(e)}")
-        return jsonify({"error": str(e)}), 500
+        return handle_api_error(e, "Get opinion")
 
 
 @research_bp.route('/citation/<path:cite>', methods=['GET'])
@@ -316,11 +352,12 @@ def lookup_citation(cite):
             "results": results.get('results', [])
         })
 
+    except APIConfigError as e:
+        return jsonify({"error": str(e)}), 401
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
     except Exception as e:
-        current_app.logger.error(f"Citation lookup error: {str(e)}")
-        return jsonify({"error": str(e)}), 500
+        return handle_api_error(e, "Citation lookup")
 
 
 @research_bp.route('/citing/<int:cluster_id>', methods=['GET'])
@@ -354,11 +391,12 @@ def get_citing_cases(cluster_id):
             "citing_cases": formatted_results
         })
 
+    except APIConfigError as e:
+        return jsonify({"error": str(e)}), 401
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
     except Exception as e:
-        current_app.logger.error(f"Get citing cases error: {str(e)}")
-        return jsonify({"error": str(e)}), 500
+        return handle_api_error(e, "Get citing cases")
 
 
 @research_bp.route('/dockets', methods=['GET'])
@@ -422,8 +460,9 @@ def search_dockets():
             "results": formatted_results
         })
 
+    except APIConfigError as e:
+        return jsonify({"error": str(e)}), 401
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
     except Exception as e:
-        current_app.logger.error(f"Search dockets error: {str(e)}")
-        return jsonify({"error": str(e)}), 500
+        return handle_api_error(e, "Search dockets")

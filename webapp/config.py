@@ -29,6 +29,10 @@ class Config:
     OUTPUT_DIR = str(OUTPUT_DIR)
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB max upload
 
+    # Upload settings
+    UPLOAD_ALLOWED_EXTENSIONS = {'docx'}
+    UPLOAD_MAX_FILE_SIZE = 16 * 1024 * 1024  # 16MB
+
 # DC District Court specific constants
 DC_COURT_NAME = "UNITED STATES DISTRICT COURT\nFOR THE DISTRICT OF COLUMBIA"
 DC_COURT_ID = "dcd"

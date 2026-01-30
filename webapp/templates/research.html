@@ -196,7 +196,19 @@ async function searchCases() {
 
     try {
         const response = await fetch(`/api/research/cases?${params}`);
-        const data = await response.json();
+
+        // Check content type before parsing JSON
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+            throw new Error('Server returned an invalid response. Please try again or check if the CourtListener API is available.');
+        }
+
+        let data;
+        try {
+            data = await response.json();
+        } catch (parseError) {
+            throw new Error('Failed to parse server response. The service may be temporarily unavailable.');
+        }
 
         if (data.error) {
             showError(data.error);
@@ -206,7 +218,7 @@ async function searchCases() {
         displayResults(data);
 
     } catch (error) {
-        showError(error.message);
+        showError(error.message || 'An unexpected error occurred. Please try again.');
     }
 }
 
@@ -435,7 +447,19 @@ async function lookupCitation() {
 
     try {
         const response = await fetch(`/api/research/citation/${encodeURIComponent(citation)}`);
-        const data = await response.json();
+
+        // Check content type before parsing JSON
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+            throw new Error('Server returned an invalid response. Please try again.');
+        }
+
+        let data;
+        try {
+            data = await response.json();
+        } catch (parseError) {
+            throw new Error('Failed to parse server response.');
+        }
 
         if (data.error) {
             showError(data.error);
@@ -468,7 +492,7 @@ async function lookupCitation() {
         container.innerHTML = html;
 
     } catch (error) {
-        showError(error.message);
+        showError(error.message || 'An unexpected error occurred.');
     }
 }
 
@@ -488,7 +512,19 @@ async function lookupDocket() {
         showLoading();
         try {
             const response = await fetch(`/api/research/dockets?docket_number=${encodeURIComponent(input)}`);
-            const data = await response.json();
+
+            // Check content type before parsing JSON
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                throw new Error('Server returned an invalid response. Please try again.');
+            }
+
+            let data;
+            try {
+                data = await response.json();
+            } catch (parseError) {
+                throw new Error('Failed to parse server response.');
+            }
 
             if (data.error) {
                 showError(data.error);
@@ -498,7 +534,7 @@ async function lookupDocket() {
             displayDocketResults(data);
 
         } catch (error) {
-            showError(error.message);
+            showError(error.message || 'An unexpected error occurred.');
         }
     }
 }

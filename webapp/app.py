@@ -18,6 +18,7 @@ from flask_cors import CORS
 from config import Config, OUTPUT_DIR
 from api.documents import documents_bp
 from api.research import research_bp
+from api.upload import upload_bp
 
 
 def create_app():
@@ -34,6 +35,7 @@ def create_app():
     # Register blueprints
     app.register_blueprint(documents_bp)
     app.register_blueprint(research_bp)
+    app.register_blueprint(upload_bp)
 
     # Main routes
     @app.route('/')
@@ -50,6 +52,11 @@ def create_app():
     def research():
         """Court research page."""
         return render_template('research.html')
+
+    @app.route('/upload')
+    def upload():
+        """Document upload and reformat page."""
+        return render_template('upload.html')
 
     @app.route('/health')
     def health():
@@ -79,8 +86,9 @@ if __name__ == '__main__':
     print("\nStarting web application...")
     print("\nOpen your browser to: http://localhost:5000")
     print("\nModes:")
-    print("  - Document Generator: http://localhost:5000/generator")
-    print("  - Court Research:     http://localhost:5000/research")
+    print("  - Document Generator:  http://localhost:5000/generator")
+    print("  - Upload & Reformat:   http://localhost:5000/upload")
+    print("  - Court Research:      http://localhost:5000/research")
     print("\nPress Ctrl+C to stop the server")
     print("=" * 60 + "\n")
 
