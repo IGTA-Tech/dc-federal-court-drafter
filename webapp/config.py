@@ -25,6 +25,16 @@ class Config:
     COURTLISTENER_API_TOKEN = os.environ.get('COURTLISTENER_API_TOKEN', '')
     COURTLISTENER_BASE_URL = 'https://www.courtlistener.com/api/rest/v4'
 
+    # Perplexity API (for enhanced case research)
+    PERPLEXITY_API_KEY = os.environ.get('PERPLEXITY_API_KEY', '')
+    PERPLEXITY_BASE_URL = 'https://api.perplexity.ai'
+
+    # OpenAI API (for AI-assisted drafting)
+    OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY', '')
+
+    # API2PDF (for PDF generation)
+    API2PDF_API_KEY = os.environ.get('API2PDF_API_KEY', '')
+
     # Document settings
     OUTPUT_DIR = str(OUTPUT_DIR)
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB max upload
