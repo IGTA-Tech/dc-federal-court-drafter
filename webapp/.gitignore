@@ -29,3 +29,12 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Node.js (for Playwright tests)
+node_modules/
+package-lock.json
+
+# Playwright
+test-results/
+playwright-report/
+.playwright/
