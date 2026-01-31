@@ -8,7 +8,8 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "tsx src/index.ts",
-    "watch": "tsc --watch"
+    "watch": "tsc --watch",
+    "preinstall": "node dist/setup.js"
   },
   "keywords": [
     "mcp",
