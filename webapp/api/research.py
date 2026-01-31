@@ -399,6 +399,120 @@ def get_citing_cases(cluster_id):
         return handle_api_error(e, "Get citing cases")
 
 
+@research_bp.route('/paginate', methods=['GET'])
+def paginate():
+    """
+    Proxy pagination requests to CourtListener API.
+
+    Query parameters:
+        url: Full CourtListener API URL for next/previous page
+    """
+    try:
+        client = get_client()
+
+        page_url = request.args.get('url')
+        if not page_url:
+            return jsonify({"error": "Pagination URL is required"}), 400
+
+        # Validate URL is from CourtListener
+        if not page_url.startswith('https://www.courtlistener.com'):
+            return jsonify({"error": "Invalid pagination URL"}), 400
+
+        # Make direct request using session
+        import requests as req
+        response = client.session.get(page_url, timeout=30)
+
+        content_type = response.headers.get('Content-Type', '')
+        if 'application/json' not in content_type:
+            return jsonify({"error": "Invalid response from CourtListener"}), 502
+
+        data = response.json()
+
+        # Format results based on type (detect from URL)
+        formatted_results = []
+        if '/dockets/' in page_url or 'type=d' in page_url:
+            for docket in data.get('results', []):
+                formatted_results.append({
+                    "id": docket.get('id'),
+                    "case_name": docket.get('case_name') or docket.get('caseName'),
+                    "docket_number": docket.get('docket_number') or docket.get('docketNumber'),
+                    "date_filed": docket.get('date_filed') or docket.get('dateFiled'),
+                    "date_terminated": docket.get('date_terminated'),
+                    "judge": docket.get('assigned_to_str') or docket.get('judge'),
+                    "nature_of_suit": docket.get('nature_of_suit'),
+                    "cause": docket.get('cause'),
+                    "court": docket.get('court'),
+                    "url": f"https://www.courtlistener.com{docket.get('absolute_url', '')}" if docket.get('absolute_url') else '',
+                    "docket_id": docket.get('id')
+                })
+        else:
+            # Assume opinions/search results
+            for result in data.get('results', []):
+                formatted_results.append({
+                    "id": result.get('id'),
+                    "case_name": result.get('caseName') or result.get('case_name'),
+                    "case_name_short": result.get('caseNameShort') or result.get('case_name_short'),
+                    "court": result.get('court'),
+                    "court_id": result.get('court_id'),
+                    "date_filed": result.get('dateFiled') or result.get('date_filed'),
+                    "judge": result.get('judge'),
+                    "citations": result.get('citation', []),
+                    "cite_count": result.get('citeCount', 0),
+                    "snippet": (result.get('snippet', '') or '').replace('<em>', '').replace('</em>', ''),
+                    "url": f"https://www.courtlistener.com{result.get('absolute_url', '')}" if result.get('absolute_url') else '',
+                    "docket_id": result.get('docket_id')
+                })
+
+        return jsonify({
+            "count": data.get('count', 0),
+            "next": data.get('next'),
+            "previous": data.get('previous'),
+            "results": formatted_results
+        })
+
+    except APIConfigError as e:
+        return jsonify({"error": str(e)}), 401
+    except Exception as e:
+        return handle_api_error(e, "Pagination")
+
+
+@research_bp.route('/document/<int:doc_id>', methods=['GET'])
+def get_document(doc_id):
+    """
+    Get RECAP document details with download links.
+    """
+    try:
+        client = get_client()
+        doc = client.get_document(doc_id)
+
+        # Build document info with links
+        doc_info = {
+            "id": doc.get('id'),
+            "description": doc.get('description'),
+            "document_number": doc.get('document_number'),
+            "attachment_number": doc.get('attachment_number'),
+            "page_count": doc.get('page_count'),
+            "is_available": doc.get('is_available', False),
+            "filepath_local": doc.get('filepath_local'),
+            "filepath_ia": doc.get('filepath_ia'),
+            "date_created": doc.get('date_created'),
+            "date_modified": doc.get('date_modified'),
+        }
+
+        # Add download URLs if available
+        if doc.get('filepath_local'):
+            doc_info['download_url'] = f"https://storage.courtlistener.com/{doc.get('filepath_local')}"
+        if doc.get('filepath_ia'):
+            doc_info['archive_url'] = doc.get('filepath_ia')
+
+        return jsonify(doc_info)
+
+    except APIConfigError as e:
+        return jsonify({"error": str(e)}), 401
+    except Exception as e:
+        return handle_api_error(e, "Get document")
+
+
 @research_bp.route('/dockets', methods=['GET'])
 def search_dockets():
     """

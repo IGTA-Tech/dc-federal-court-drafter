@@ -4,8 +4,8 @@
 
 {% block content %}
 <div class="row">
-    <!-- Left Column: Search -->
-    <div class="col-lg-4">
+    <!-- Left Column: Search Controls -->
+    <div class="col-lg-3">
         <!-- API Status -->
         <div class="card mb-3" id="apiStatusCard">
             <div class="card-body py-2">
@@ -15,36 +15,37 @@
 
         <!-- Search Form -->
         <div class="card mb-3">
-            <div class="card-header">
-                <h6 class="mb-0"><i class="bi bi-search"></i> Search Cases</h6>
+            <div class="card-header bg-primary text-white">
+                <h6 class="mb-0"><i class="bi bi-search"></i> Search DC Cases</h6>
             </div>
             <div class="card-body">
                 <form id="searchForm">
                     <div class="mb-3">
-                        <label class="form-label">Search Query</label>
+                        <label class="form-label fw-bold">Search Query</label>
                         <input type="text" class="form-control" id="searchQuery" placeholder="Case name, keywords...">
+                        <small class="text-muted">Tip: Use quotes for exact phrases</small>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Search Type</label>
                         <select class="form-select" id="searchType">
                             <option value="o">Opinions (Case Law)</option>
                             <option value="r">RECAP Documents</option>
-                            <option value="d">Dockets</option>
+                            <option value="d">Dockets (PACER)</option>
                         </select>
                     </div>
                     <div class="row mb-3">
                         <div class="col-6">
                             <label class="form-label">Filed After</label>
-                            <input type="date" class="form-control" id="filedAfter">
+                            <input type="date" class="form-control form-control-sm" id="filedAfter">
                         </div>
                         <div class="col-6">
                             <label class="form-label">Filed Before</label>
-                            <input type="date" class="form-control" id="filedBefore">
+                            <input type="date" class="form-control form-control-sm" id="filedBefore">
                         </div>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Judge</label>
-                        <input type="text" class="form-control" id="judgeFilter" placeholder="Judge name">
+                        <input type="text" class="form-control form-control-sm" id="judgeFilter" placeholder="Judge name">
                     </div>
                     <button type="submit" class="btn btn-primary w-100">
                         <i class="bi bi-search"></i> Search
@@ -53,46 +54,65 @@
             </div>
         </div>
 
-        <!-- Citation Lookup -->
+        <!-- Quick Lookups -->
         <div class="card mb-3">
             <div class="card-header">
                 <h6 class="mb-0"><i class="bi bi-bookmark"></i> Citation Lookup</h6>
             </div>
             <div class="card-body">
-                <div class="mb-3">
-                    <input type="text" class="form-control" id="citationInput" placeholder="e.g., 550 U.S. 544">
+                <div class="input-group">
+                    <input type="text" class="form-control form-control-sm" id="citationInput" placeholder="e.g., 550 U.S. 544">
+                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="lookupCitation()">
+                        <i class="bi bi-search"></i>
+                    </button>
                 </div>
-                <button type="button" class="btn btn-outline-primary w-100" onclick="lookupCitation()">
-                    <i class="bi bi-search"></i> Look Up
-                </button>
             </div>
         </div>
 
-        <!-- Docket Lookup -->
         <div class="card">
             <div class="card-header">
                 <h6 class="mb-0"><i class="bi bi-folder"></i> Docket Lookup</h6>
             </div>
             <div class="card-body">
-                <div class="mb-3">
-                    <input type="text" class="form-control" id="docketNumber" placeholder="Docket number or ID">
+                <div class="input-group">
+                    <input type="text" class="form-control form-control-sm" id="docketNumber" placeholder="Docket # or ID">
+                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="lookupDocket()">
+                        <i class="bi bi-folder2-open"></i>
+                    </button>
                 </div>
-                <button type="button" class="btn btn-outline-primary w-100" onclick="lookupDocket()">
-                    <i class="bi bi-folder2-open"></i> Get Docket
-                </button>
             </div>
         </div>
     </div>
 
     <!-- Right Column: Results -->
-    <div class="col-lg-8">
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h6 class="mb-0"><i class="bi bi-list"></i> Results</h6>
-                <span id="resultCount" class="badge bg-secondary">0 results</span>
+    <div class="col-lg-9">
+        <!-- Results Header -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0">
+                <i class="bi bi-list-ul"></i> Results
+                <span id="resultCount" class="badge bg-secondary ms-2">0</span>
+            </h5>
+            <div id="viewToggle" style="display: none;">
+                <div class="btn-group btn-group-sm">
+                    <button class="btn btn-outline-secondary active" onclick="setView('list')" id="listViewBtn">
+                        <i class="bi bi-list"></i> List
+                    </button>
+                    <button class="btn btn-outline-secondary" onclick="setView('detail')" id="detailViewBtn">
+                        <i class="bi bi-card-text"></i> Detail
+                    </button>
+                </div>
             </div>
-            <div class="card-body" id="resultsContainer" style="min-height: 400px;">
-                <p class="text-muted text-center mt-5">Enter a search query to find DC District Court cases.</p>
+        </div>
+
+        <!-- Results Container -->
+        <div class="card">
+            <div class="card-body" id="resultsContainer" style="min-height: 500px;">
+                <div class="text-center text-muted py-5">
+                    <i class="bi bi-search" style="font-size: 3rem;"></i>
+                    <h5 class="mt-3">Search DC District Court Cases</h5>
+                    <p>Enter a search query to find opinions, dockets, and court documents.</p>
+                    <p class="small">Data provided by <a href="https://www.courtlistener.com" target="_blank">CourtListener</a> (Free Law Project)</p>
+                </div>
             </div>
         </div>
 
@@ -100,29 +120,100 @@
         <nav id="pagination" class="mt-3" style="display: none;">
             <ul class="pagination justify-content-center">
                 <li class="page-item" id="prevPage">
-                    <a class="page-link" href="#" onclick="changePage('prev')">Previous</a>
+                    <a class="page-link" href="#" onclick="changePage('prev'); return false;">
+                        <i class="bi bi-chevron-left"></i> Previous
+                    </a>
+                </li>
+                <li class="page-item disabled">
+                    <span class="page-link" id="pageInfo">Page 1</span>
                 </li>
                 <li class="page-item" id="nextPage">
-                    <a class="page-link" href="#" onclick="changePage('next')">Next</a>
+                    <a class="page-link" href="#" onclick="changePage('next'); return false;">
+                        Next <i class="bi bi-chevron-right"></i>
+                    </a>
                 </li>
             </ul>
         </nav>
     </div>
 </div>
 
-<!-- Case Detail Modal -->
+<!-- Expanded Case Detail Modal (Full Width) -->
 <div class="modal fade" id="caseModal" tabindex="-1">
-    <div class="modal-dialog modal-xl">
+    <div class="modal-dialog modal-fullscreen-lg-down modal-xl">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="caseModalTitle">Case Details</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            <div class="modal-header bg-light">
+                <div>
+                    <h5 class="modal-title" id="caseModalTitle">Case Details</h5>
+                    <small class="text-muted" id="caseModalSubtitle"></small>
+                </div>
+                <div class="d-flex align-items-center">
+                    <a href="#" id="courtListenerLink" class="btn btn-sm btn-outline-primary me-2" target="_blank">
+                        <i class="bi bi-box-arrow-up-right"></i> View on CourtListener
+                    </a>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
             </div>
-            <div class="modal-body" id="caseModalBody">
-                Loading...
+            <div class="modal-body p-0">
+                <!-- Tabs Navigation -->
+                <ul class="nav nav-tabs px-3 pt-2" id="caseTabs">
+                    <li class="nav-item">
+                        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#caseInfoTab">
+                            <i class="bi bi-info-circle"></i> Case Info
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#docketEntriesTab">
+                            <i class="bi bi-list-ol"></i> Docket Entries
+                            <span class="badge bg-secondary" id="entriesCount">0</span>
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#partiesTab">
+                            <i class="bi bi-people"></i> Parties
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#documentsTab">
+                            <i class="bi bi-file-earmark-text"></i> Documents
+                        </button>
+                    </li>
+                </ul>
+
+                <!-- Tab Content -->
+                <div class="tab-content p-3" id="caseTabContent">
+                    <!-- Case Info Tab -->
+                    <div class="tab-pane fade show active" id="caseInfoTab">
+                        <div id="caseInfoContent">Loading...</div>
+                    </div>
+
+                    <!-- Docket Entries Tab -->
+                    <div class="tab-pane fade" id="docketEntriesTab">
+                        <div id="docketEntriesContent">
+                            <button class="btn btn-primary" onclick="loadDocketEntries()">
+                                <i class="bi bi-download"></i> Load Docket Entries
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Parties Tab -->
+                    <div class="tab-pane fade" id="partiesTab">
+                        <div id="partiesContent">
+                            <button class="btn btn-primary" onclick="loadParties()">
+                                <i class="bi bi-download"></i> Load Parties & Attorneys
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Documents Tab -->
+                    <div class="tab-pane fade" id="documentsTab">
+                        <div id="documentsContent">
+                            <p class="text-muted">Documents will appear after loading docket entries.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" onclick="exportToGenerator()">
+                <button type="button" class="btn btn-success" onclick="exportToGenerator()">
                     <i class="bi bi-arrow-right-square"></i> Export to Document Generator
                 </button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -134,23 +225,35 @@
 
 {% block extra_js %}
 <script>
+// State variables
 let currentPage = 1;
 let nextPageUrl = null;
 let prevPageUrl = null;
 let currentCaseData = null;
+let currentDocketId = null;
+let currentSearchType = 'o';
+let allDocuments = [];
 
-// Check API status on load
+// Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
     checkApiStatus();
 
-    // Search form submission
     document.getElementById('searchForm').addEventListener('submit', function(e) {
         e.preventDefault();
+        currentPage = 1;
         searchCases();
+    });
+
+    // Enter key for quick lookups
+    document.getElementById('citationInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') lookupCitation();
+    });
+    document.getElementById('docketNumber').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') lookupDocket();
     });
 });
 
-// Check CourtListener API status
+// Check API status
 async function checkApiStatus() {
     try {
         const response = await fetch('/api/research/status');
@@ -161,55 +264,57 @@ async function checkApiStatus() {
         if (data.configured) {
             statusCard.classList.remove('border-warning');
             statusCard.classList.add('border-success');
-            statusText.innerHTML = '<i class="bi bi-check-circle text-success"></i> CourtListener API configured';
+            statusText.innerHTML = '<i class="bi bi-check-circle text-success"></i> API Ready';
         } else {
             statusCard.classList.add('border-warning');
             statusText.innerHTML = '<i class="bi bi-exclamation-triangle text-warning"></i> ' + data.message;
         }
     } catch (error) {
-        console.error('Error checking API status:', error);
+        console.error('API status check failed:', error);
     }
 }
 
-// Search cases
-async function searchCases() {
+// Main search function
+async function searchCases(pageUrl = null) {
     const query = document.getElementById('searchQuery').value;
-    if (!query) {
-        alert('Please enter a search query');
+    if (!query && !pageUrl) {
+        showError('Please enter a search query');
         return;
     }
 
-    const params = new URLSearchParams({
-        q: query,
-        type: document.getElementById('searchType').value
-    });
-
-    const filedAfter = document.getElementById('filedAfter').value;
-    const filedBefore = document.getElementById('filedBefore').value;
-    const judge = document.getElementById('judgeFilter').value;
-
-    if (filedAfter) params.append('filed_after', filedAfter);
-    if (filedBefore) params.append('filed_before', filedBefore);
-    if (judge) params.append('judge', judge);
-
-    showLoading();
+    currentSearchType = document.getElementById('searchType').value;
+    showLoading('Searching DC District Court cases...');
 
     try {
-        const response = await fetch(`/api/research/cases?${params}`);
+        let response;
+        if (pageUrl) {
+            // Use pagination endpoint
+            response = await fetch(`/api/research/paginate?url=${encodeURIComponent(pageUrl)}`);
+        } else {
+            // Build search params
+            const params = new URLSearchParams({
+                q: query,
+                type: currentSearchType
+            });
 
-        // Check content type before parsing JSON
+            const filedAfter = document.getElementById('filedAfter').value;
+            const filedBefore = document.getElementById('filedBefore').value;
+            const judge = document.getElementById('judgeFilter').value;
+
+            if (filedAfter) params.append('filed_after', filedAfter);
+            if (filedBefore) params.append('filed_before', filedBefore);
+            if (judge) params.append('judge', judge);
+
+            response = await fetch(`/api/research/cases?${params}`);
+        }
+
+        // Validate response
         const contentType = response.headers.get('content-type');
         if (!contentType || !contentType.includes('application/json')) {
-            throw new Error('Server returned an invalid response. Please try again or check if the CourtListener API is available.');
+            throw new Error('Server returned an invalid response. Please try again.');
         }
 
-        let data;
-        try {
-            data = await response.json();
-        } catch (parseError) {
-            throw new Error('Failed to parse server response. The service may be temporarily unavailable.');
-        }
-
+        const data = await response.json();
         if (data.error) {
             showError(data.error);
             return;
@@ -218,7 +323,7 @@ async function searchCases() {
         displayResults(data);
 
     } catch (error) {
-        showError(error.message || 'An unexpected error occurred. Please try again.');
+        showError(error.message || 'Search failed. Please try again.');
     }
 }
 
@@ -227,187 +332,451 @@ function displayResults(data) {
     const container = document.getElementById('resultsContainer');
     const countBadge = document.getElementById('resultCount');
 
-    countBadge.textContent = `${data.count} results`;
+    countBadge.textContent = data.count.toLocaleString();
+    document.getElementById('viewToggle').style.display = data.results.length > 0 ? 'block' : 'none';
 
     if (data.results.length === 0) {
-        container.innerHTML = '<p class="text-muted text-center mt-5">No results found.</p>';
+        container.innerHTML = `
+            <div class="text-center text-muted py-5">
+                <i class="bi bi-search" style="font-size: 2rem;"></i>
+                <h6 class="mt-3">No results found</h6>
+                <p>Try different keywords or adjust your filters.</p>
+            </div>`;
         document.getElementById('pagination').style.display = 'none';
         return;
     }
 
-    let html = '<div class="list-group">';
-    data.results.forEach(result => {
-        const citations = result.citations ? result.citations.join(', ') : '';
-        const snippet = result.snippet ? result.snippet.substring(0, 200) + '...' : '';
+    let html = '<div class="list-group list-group-flush">';
+    data.results.forEach((result, index) => {
+        const citations = result.citations ? result.citations.slice(0, 3).join(', ') : '';
+        const snippet = result.snippet ? result.snippet.substring(0, 250) + '...' : '';
+        const status = result.date_terminated ? 'Closed' : (result.date_filed ? 'Active' : '');
+        const statusClass = result.date_terminated ? 'bg-secondary' : 'bg-success';
 
         html += `
-            <div class="list-group-item list-group-item-action" onclick="showCaseDetail(${result.docket_id || result.id}, '${result.case_name.replace(/'/g, "\\'")}')">
+            <div class="list-group-item list-group-item-action py-3"
+                 onclick="showCaseDetail(${result.docket_id || result.id}, '${escapeHtml(result.case_name)}', '${result.url || ''}')"
+                 style="cursor: pointer;">
                 <div class="d-flex justify-content-between align-items-start">
-                    <h6 class="mb-1">${result.case_name}</h6>
-                    ${result.cite_count > 0 ? `<span class="badge bg-info">${result.cite_count} citations</span>` : ''}
+                    <div class="flex-grow-1">
+                        <h6 class="mb-1 text-primary">${escapeHtml(result.case_name)}</h6>
+                        <div class="mb-1">
+                            ${result.docket_number ? `<span class="badge bg-light text-dark me-1">${escapeHtml(result.docket_number)}</span>` : ''}
+                            ${status ? `<span class="badge ${statusClass} me-1">${status}</span>` : ''}
+                            ${result.cite_count > 0 ? `<span class="badge bg-info">${result.cite_count} citations</span>` : ''}
+                        </div>
+                        <p class="mb-1 small text-muted">
+                            ${result.court ? `<strong>Court:</strong> ${result.court}` : ''}
+                            ${result.date_filed ? ` | <strong>Filed:</strong> ${result.date_filed}` : ''}
+                            ${result.judge ? ` | <strong>Judge:</strong> ${result.judge}` : ''}
+                        </p>
+                        ${citations ? `<p class="mb-1 small"><strong>Citation:</strong> ${escapeHtml(citations)}</p>` : ''}
+                        ${snippet ? `<p class="mb-0 small text-muted fst-italic">${escapeHtml(snippet)}</p>` : ''}
+                    </div>
+                    <div class="ms-3">
+                        <a href="${result.url}" target="_blank" class="btn btn-sm btn-outline-secondary"
+                           onclick="event.stopPropagation();" title="View on CourtListener">
+                            <i class="bi bi-box-arrow-up-right"></i>
+                        </a>
+                    </div>
                 </div>
-                <p class="mb-1 small">
-                    <strong>Court:</strong> ${result.court} |
-                    <strong>Filed:</strong> ${result.date_filed || 'N/A'}
-                    ${result.judge ? ` | <strong>Judge:</strong> ${result.judge}` : ''}
-                </p>
-                ${citations ? `<p class="mb-1 small text-muted"><strong>Citation:</strong> ${citations}</p>` : ''}
-                ${snippet ? `<p class="mb-0 small text-muted">${snippet}</p>` : ''}
-                <div class="mt-2">
-                    <a href="${result.url}" target="_blank" class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation();">
-                        <i class="bi bi-box-arrow-up-right"></i> View on CourtListener
-                    </a>
-                </div>
-            </div>
-        `;
+            </div>`;
     });
     html += '</div>';
 
     container.innerHTML = html;
 
-    // Handle pagination
+    // Update pagination
     nextPageUrl = data.next;
     prevPageUrl = data.previous;
-    document.getElementById('pagination').style.display = (nextPageUrl || prevPageUrl) ? 'block' : 'none';
-    document.getElementById('prevPage').classList.toggle('disabled', !prevPageUrl);
-    document.getElementById('nextPage').classList.toggle('disabled', !nextPageUrl);
+    updatePagination();
 }
 
-// Show case detail
-async function showCaseDetail(id, name) {
+// Update pagination controls
+function updatePagination() {
+    const paginationNav = document.getElementById('pagination');
+    paginationNav.style.display = (nextPageUrl || prevPageUrl) ? 'block' : 'none';
+
+    document.getElementById('prevPage').classList.toggle('disabled', !prevPageUrl);
+    document.getElementById('nextPage').classList.toggle('disabled', !nextPageUrl);
+    document.getElementById('pageInfo').textContent = `Page ${currentPage}`;
+}
+
+// Handle page change
+function changePage(direction) {
+    if (direction === 'prev' && prevPageUrl) {
+        currentPage--;
+        searchCases(prevPageUrl);
+    } else if (direction === 'next' && nextPageUrl) {
+        currentPage++;
+        searchCases(nextPageUrl);
+    }
+}
+
+// Show case detail in modal
+async function showCaseDetail(id, name, url) {
+    currentDocketId = id;
+    currentCaseData = null;
+    allDocuments = [];
+
     const modal = new bootstrap.Modal(document.getElementById('caseModal'));
     document.getElementById('caseModalTitle').textContent = name;
-    document.getElementById('caseModalBody').innerHTML = '<div class="text-center"><div class="spinner-border"></div><p>Loading...</p></div>';
+    document.getElementById('caseModalSubtitle').textContent = '';
+    document.getElementById('courtListenerLink').href = url || `https://www.courtlistener.com/docket/${id}/`;
+    document.getElementById('caseInfoContent').innerHTML = '<div class="text-center py-4"><div class="spinner-border"></div><p class="mt-2">Loading case information...</p></div>';
+    document.getElementById('docketEntriesContent').innerHTML = '<button class="btn btn-primary" onclick="loadDocketEntries()"><i class="bi bi-download"></i> Load Docket Entries</button>';
+    document.getElementById('partiesContent').innerHTML = '<button class="btn btn-primary" onclick="loadParties()"><i class="bi bi-download"></i> Load Parties & Attorneys</button>';
+    document.getElementById('documentsContent').innerHTML = '<p class="text-muted">Load docket entries to see available documents.</p>';
+    document.getElementById('entriesCount').textContent = '0';
+
+    // Reset to first tab
+    const firstTab = document.querySelector('#caseTabs .nav-link');
+    if (firstTab) bootstrap.Tab.getOrCreateInstance(firstTab).show();
+
     modal.show();
 
     try {
-        // Try to get docket info
         const response = await fetch(`/api/research/docket/${id}`);
         const data = await response.json();
 
         if (data.error) {
-            document.getElementById('caseModalBody').innerHTML = `<div class="alert alert-warning">${data.error}</div>`;
+            document.getElementById('caseInfoContent').innerHTML = `<div class="alert alert-warning">${data.error}</div>`;
             return;
         }
 
         currentCaseData = data;
+        document.getElementById('caseModalSubtitle').textContent = data.docket.docket_number || '';
 
+        // Build case info display
+        const docket = data.docket;
         let html = `
             <div class="row">
                 <div class="col-md-6">
-                    <h6>Case Information</h6>
-                    <table class="table table-sm">
-                        <tr><td><strong>Case Name</strong></td><td>${data.docket.case_name}</td></tr>
-                        <tr><td><strong>Docket Number</strong></td><td>${data.docket.docket_number}</td></tr>
-                        <tr><td><strong>Date Filed</strong></td><td>${data.docket.date_filed || 'N/A'}</td></tr>
-                        <tr><td><strong>Date Terminated</strong></td><td>${data.docket.date_terminated || 'Open'}</td></tr>
-                        <tr><td><strong>Judge</strong></td><td>${data.docket.assigned_to_str || 'N/A'}</td></tr>
-                        <tr><td><strong>Nature of Suit</strong></td><td>${data.docket.nature_of_suit || 'N/A'}</td></tr>
-                        <tr><td><strong>Cause</strong></td><td>${data.docket.cause || 'N/A'}</td></tr>
-                    </table>
+                    <div class="card mb-3">
+                        <div class="card-header bg-light"><i class="bi bi-info-circle"></i> Case Information</div>
+                        <div class="card-body">
+                            <table class="table table-sm table-borderless mb-0">
+                                <tr><td class="text-muted" width="40%">Case Name</td><td><strong>${escapeHtml(docket.case_name)}</strong></td></tr>
+                                <tr><td class="text-muted">Docket Number</td><td>${escapeHtml(docket.docket_number || 'N/A')}</td></tr>
+                                <tr><td class="text-muted">Court</td><td>${escapeHtml(docket.court || 'DC District Court')}</td></tr>
+                                <tr><td class="text-muted">Judge</td><td>${escapeHtml(docket.assigned_to_str || 'N/A')}</td></tr>
+                                <tr><td class="text-muted">Magistrate</td><td>${escapeHtml(docket.referred_to_str || 'N/A')}</td></tr>
+                            </table>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-md-6">
-                    <h6>Actions</h6>
-                    <button class="btn btn-outline-primary btn-sm mb-2 w-100" onclick="loadDocketEntries(${id})">
-                        <i class="bi bi-list-ul"></i> Load Docket Entries
-                    </button>
-                    <button class="btn btn-outline-primary btn-sm mb-2 w-100" onclick="loadParties(${id})">
-                        <i class="bi bi-people"></i> Load Parties & Attorneys
-                    </button>
+                    <div class="card mb-3">
+                        <div class="card-header bg-light"><i class="bi bi-calendar"></i> Key Dates & Status</div>
+                        <div class="card-body">
+                            <table class="table table-sm table-borderless mb-0">
+                                <tr>
+                                    <td class="text-muted" width="40%">Status</td>
+                                    <td>
+                                        ${docket.date_terminated
+                                            ? '<span class="badge bg-secondary">Closed</span>'
+                                            : '<span class="badge bg-success">Open</span>'}
+                                    </td>
+                                </tr>
+                                <tr><td class="text-muted">Date Filed</td><td>${docket.date_filed || 'N/A'}</td></tr>
+                                <tr><td class="text-muted">Date Terminated</td><td>${docket.date_terminated || 'N/A'}</td></tr>
+                                <tr><td class="text-muted">Last Updated</td><td>${docket.date_modified ? docket.date_modified.split('T')[0] : 'N/A'}</td></tr>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div id="caseDetails"></div>
-        `;
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-3">
+                        <div class="card-header bg-light"><i class="bi bi-tag"></i> Case Classification</div>
+                        <div class="card-body">
+                            <table class="table table-sm table-borderless mb-0">
+                                <tr><td class="text-muted" width="40%">Nature of Suit</td><td>${escapeHtml(docket.nature_of_suit || 'N/A')}</td></tr>
+                                <tr><td class="text-muted">Cause of Action</td><td>${escapeHtml(docket.cause || 'N/A')}</td></tr>
+                                <tr><td class="text-muted">Jury Demand</td><td>${escapeHtml(docket.jury_demand || 'N/A')}</td></tr>
+                                <tr><td class="text-muted">Jurisdiction</td><td>${escapeHtml(docket.jurisdiction_type || 'N/A')}</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card mb-3">
+                        <div class="card-header bg-light"><i class="bi bi-link-45deg"></i> Quick Actions</div>
+                        <div class="card-body">
+                            <a href="https://www.courtlistener.com/docket/${id}/" target="_blank" class="btn btn-sm btn-outline-primary mb-2 w-100">
+                                <i class="bi bi-box-arrow-up-right"></i> View Full Docket on CourtListener
+                            </a>
+                            <button class="btn btn-sm btn-outline-secondary mb-2 w-100" onclick="loadDocketEntries()">
+                                <i class="bi bi-list-ol"></i> Load All Docket Entries
+                            </button>
+                            <button class="btn btn-sm btn-outline-secondary w-100" onclick="loadParties()">
+                                <i class="bi bi-people"></i> Load All Parties
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
 
-        document.getElementById('caseModalBody').innerHTML = html;
+        document.getElementById('caseInfoContent').innerHTML = html;
 
     } catch (error) {
-        document.getElementById('caseModalBody').innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
+        document.getElementById('caseInfoContent').innerHTML = `<div class="alert alert-danger">Error loading case: ${error.message}</div>`;
     }
 }
 
 // Load docket entries
-async function loadDocketEntries(docketId) {
-    const detailsDiv = document.getElementById('caseDetails');
-    detailsDiv.innerHTML = '<div class="text-center mt-3"><div class="spinner-border spinner-border-sm"></div> Loading entries...</div>';
+async function loadDocketEntries() {
+    if (!currentDocketId) return;
+
+    const container = document.getElementById('docketEntriesContent');
+    container.innerHTML = '<div class="text-center py-4"><div class="spinner-border spinner-border-sm"></div> Loading docket entries...</div>';
 
     try {
-        const response = await fetch(`/api/research/docket/${docketId}/entries`);
+        const response = await fetch(`/api/research/docket/${currentDocketId}/entries?page_size=100`);
         const data = await response.json();
 
-        let html = '<h6 class="mt-4">Docket Entries</h6>';
-
-        if (data.entries && data.entries.length > 0) {
-            html += '<div class="list-group list-group-flush" style="max-height: 300px; overflow-y: auto;">';
-            data.entries.forEach(entry => {
-                const docCount = entry.recap_documents ? entry.recap_documents.length : 0;
-                html += `
-                    <div class="list-group-item py-2">
-                        <div class="d-flex justify-content-between">
-                            <strong>${entry.entry_number ? '#' + entry.entry_number : ''}</strong>
-                            <small class="text-muted">${entry.date_filed || ''}</small>
-                        </div>
-                        <p class="mb-0 small">${entry.description}</p>
-                        ${docCount > 0 ? `<span class="badge bg-secondary">${docCount} document(s)</span>` : ''}
-                    </div>
-                `;
-            });
-            html += '</div>';
-        } else {
-            html += '<p class="text-muted">No entries available.</p>';
+        if (data.error) {
+            container.innerHTML = `<div class="alert alert-warning">${data.error}</div>`;
+            return;
         }
 
-        detailsDiv.innerHTML = html;
+        document.getElementById('entriesCount').textContent = data.count || data.entries.length;
+
+        if (!data.entries || data.entries.length === 0) {
+            container.innerHTML = '<p class="text-muted">No docket entries found.</p>';
+            return;
+        }
+
+        // Collect all documents
+        allDocuments = [];
+        data.entries.forEach(entry => {
+            if (entry.recap_documents && entry.recap_documents.length > 0) {
+                entry.recap_documents.forEach(doc => {
+                    allDocuments.push({
+                        ...doc,
+                        entry_number: entry.entry_number,
+                        entry_date: entry.date_filed
+                    });
+                });
+            }
+        });
+
+        // Update documents tab
+        updateDocumentsTab();
+
+        let html = `
+            <div class="mb-3">
+                <span class="text-muted">Showing ${data.entries.length} of ${data.count} entries</span>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-sm table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th width="60">#</th>
+                            <th width="100">Date</th>
+                            <th>Description</th>
+                            <th width="100">Docs</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+
+        data.entries.forEach(entry => {
+            const docCount = entry.recap_documents ? entry.recap_documents.length : 0;
+            const hasAvailableDocs = entry.recap_documents && entry.recap_documents.some(d => d.is_available);
+
+            html += `
+                <tr>
+                    <td><strong>${entry.entry_number || '-'}</strong></td>
+                    <td class="text-muted small">${entry.date_filed || ''}</td>
+                    <td>${escapeHtml(entry.description || 'No description')}</td>
+                    <td>
+                        ${docCount > 0 ? `
+                            <span class="badge ${hasAvailableDocs ? 'bg-success' : 'bg-secondary'}"
+                                  title="${hasAvailableDocs ? 'Documents available' : 'Documents not available'}">
+                                ${docCount} doc${docCount > 1 ? 's' : ''}
+                            </span>
+                        ` : '<span class="text-muted">-</span>'}
+                    </td>
+                </tr>`;
+        });
+
+        html += '</tbody></table></div>';
+
+        if (data.next) {
+            html += `<button class="btn btn-outline-primary btn-sm" onclick="loadMoreEntries('${data.next}')">Load More Entries</button>`;
+        }
+
+        container.innerHTML = html;
 
     } catch (error) {
-        detailsDiv.innerHTML = `<div class="alert alert-danger mt-3">Error: ${error.message}</div>`;
+        container.innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
     }
 }
 
+// Update documents tab with collected documents
+function updateDocumentsTab() {
+    const container = document.getElementById('documentsContent');
+
+    if (allDocuments.length === 0) {
+        container.innerHTML = '<p class="text-muted">No documents found in docket entries.</p>';
+        return;
+    }
+
+    const availableDocs = allDocuments.filter(d => d.is_available);
+    const unavailableDocs = allDocuments.filter(d => !d.is_available);
+
+    let html = `
+        <div class="mb-3">
+            <span class="badge bg-success me-2">${availableDocs.length} Available</span>
+            <span class="badge bg-secondary">${unavailableDocs.length} Unavailable</span>
+        </div>`;
+
+    if (availableDocs.length > 0) {
+        html += `
+            <h6>Available Documents</h6>
+            <div class="list-group mb-3">`;
+
+        availableDocs.forEach(doc => {
+            const downloadUrl = doc.filepath_local
+                ? `https://storage.courtlistener.com/${doc.filepath_local}`
+                : (doc.filepath_ia || '#');
+
+            html += `
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>#${doc.entry_number || '?'}</strong>
+                        ${doc.attachment_number ? `(Att. ${doc.attachment_number})` : ''}
+                        <span class="text-muted ms-2">${doc.entry_date || ''}</span>
+                        <br>
+                        <small class="text-muted">${escapeHtml(doc.description || 'Document')}</small>
+                        ${doc.page_count ? `<span class="badge bg-light text-dark ms-2">${doc.page_count} pages</span>` : ''}
+                    </div>
+                    <a href="${downloadUrl}" target="_blank" class="btn btn-sm btn-primary">
+                        <i class="bi bi-download"></i> View
+                    </a>
+                </div>`;
+        });
+
+        html += '</div>';
+    }
+
+    if (unavailableDocs.length > 0 && unavailableDocs.length <= 10) {
+        html += `
+            <details>
+                <summary class="text-muted">Unavailable Documents (${unavailableDocs.length})</summary>
+                <div class="list-group mt-2">`;
+
+        unavailableDocs.forEach(doc => {
+            html += `
+                <div class="list-group-item list-group-item-light">
+                    <strong>#${doc.entry_number || '?'}</strong>
+                    ${doc.attachment_number ? `(Att. ${doc.attachment_number})` : ''}
+                    <small class="text-muted ms-2">${escapeHtml(doc.description || 'Document')}</small>
+                </div>`;
+        });
+
+        html += '</div></details>';
+    }
+
+    container.innerHTML = html;
+}
+
 // Load parties
-async function loadParties(docketId) {
-    const detailsDiv = document.getElementById('caseDetails');
-    detailsDiv.innerHTML = '<div class="text-center mt-3"><div class="spinner-border spinner-border-sm"></div> Loading parties...</div>';
+async function loadParties() {
+    if (!currentDocketId) return;
+
+    const container = document.getElementById('partiesContent');
+    container.innerHTML = '<div class="text-center py-4"><div class="spinner-border spinner-border-sm"></div> Loading parties...</div>';
 
     try {
-        const response = await fetch(`/api/research/parties/${docketId}`);
+        const response = await fetch(`/api/research/parties/${currentDocketId}`);
         const data = await response.json();
 
-        // Store for export
+        if (data.error) {
+            container.innerHTML = `<div class="alert alert-warning">${data.error}</div>`;
+            return;
+        }
+
         if (currentCaseData) {
             currentCaseData.parties = data;
         }
 
-        let html = '<h6 class="mt-4">Parties & Attorneys</h6>';
+        let html = '';
 
+        // Show extracted plaintiffs and defendants prominently
         if (data.extracted) {
-            if (data.extracted.plaintiffs.length > 0) {
-                html += '<p><strong>Plaintiffs:</strong> ' + data.extracted.plaintiffs.join(', ') + '</p>';
-            }
-            if (data.extracted.defendants.length > 0) {
-                html += '<p><strong>Defendants:</strong> ' + data.extracted.defendants.join(', ') + '</p>';
-            }
-        }
-
-        if (data.extracted && data.extracted.attorneys.length > 0) {
-            html += '<h6>Attorneys</h6><div class="list-group list-group-flush" style="max-height: 200px; overflow-y: auto;">';
-            data.extracted.attorneys.forEach(atty => {
+            html += '<div class="row mb-3">';
+            if (data.extracted.plaintiffs && data.extracted.plaintiffs.length > 0) {
                 html += `
-                    <div class="list-group-item py-2">
-                        <strong>${atty.name}</strong>
-                        <small class="d-block text-muted">Representing: ${atty.represents} (${atty.party_type})</small>
-                        ${atty.email ? `<small class="d-block">Email: ${atty.email}</small>` : ''}
-                        ${atty.phone ? `<small class="d-block">Phone: ${atty.phone}</small>` : ''}
-                    </div>
-                `;
-            });
+                    <div class="col-md-6">
+                        <div class="card border-primary">
+                            <div class="card-header bg-primary text-white py-2">
+                                <i class="bi bi-person"></i> Plaintiffs
+                            </div>
+                            <ul class="list-group list-group-flush">
+                                ${data.extracted.plaintiffs.map(p => `<li class="list-group-item">${escapeHtml(p)}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>`;
+            }
+            if (data.extracted.defendants && data.extracted.defendants.length > 0) {
+                html += `
+                    <div class="col-md-6">
+                        <div class="card border-danger">
+                            <div class="card-header bg-danger text-white py-2">
+                                <i class="bi bi-person"></i> Defendants
+                            </div>
+                            <ul class="list-group list-group-flush">
+                                ${data.extracted.defendants.map(d => `<li class="list-group-item">${escapeHtml(d)}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>`;
+            }
             html += '</div>';
         }
 
-        detailsDiv.innerHTML = html;
+        // Show attorneys
+        if (data.extracted && data.extracted.attorneys && data.extracted.attorneys.length > 0) {
+            html += `
+                <h6><i class="bi bi-briefcase"></i> Attorneys of Record</h6>
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Name</th>
+                                <th>Represents</th>
+                                <th>Contact</th>
+                            </tr>
+                        </thead>
+                        <tbody>`;
+
+            data.extracted.attorneys.forEach(atty => {
+                html += `
+                    <tr>
+                        <td><strong>${escapeHtml(atty.name)}</strong></td>
+                        <td>
+                            ${escapeHtml(atty.represents || 'Unknown')}
+                            <br><small class="text-muted">${escapeHtml(atty.party_type || '')}</small>
+                        </td>
+                        <td>
+                            ${atty.email ? `<a href="mailto:${atty.email}">${atty.email}</a><br>` : ''}
+                            ${atty.phone ? `<small>${atty.phone}</small>` : ''}
+                        </td>
+                    </tr>`;
+            });
+
+            html += '</tbody></table></div>';
+        }
+
+        if (!html) {
+            html = '<p class="text-muted">No party information available.</p>';
+        }
+
+        container.innerHTML = html;
 
     } catch (error) {
-        detailsDiv.innerHTML = `<div class="alert alert-danger mt-3">Error: ${error.message}</div>`;
+        container.innerHTML = `<div class="alert alert-danger">Error: ${error.message}</div>`;
     }
 }
 
@@ -418,186 +787,156 @@ function exportToGenerator() {
         return;
     }
 
-    // Build URL with parameters
     const params = new URLSearchParams();
     params.append('case_number', currentCaseData.docket.docket_number || '');
     params.append('judge_name', currentCaseData.docket.assigned_to_str || '');
 
-    // Extract plaintiff and defendant from case name if possible
+    // Extract plaintiff and defendant
     const caseName = currentCaseData.docket.case_name || '';
     const vsMatch = caseName.match(/(.+?)\s+v\.?\s+(.+)/i);
     if (vsMatch) {
         params.append('plaintiff', vsMatch[1].trim());
         params.append('defendant', vsMatch[2].trim());
+    } else if (currentCaseData.parties && currentCaseData.parties.extracted) {
+        if (currentCaseData.parties.extracted.plaintiffs.length > 0) {
+            params.append('plaintiff', currentCaseData.parties.extracted.plaintiffs[0]);
+        }
+        if (currentCaseData.parties.extracted.defendants.length > 0) {
+            params.append('defendant', currentCaseData.parties.extracted.defendants[0]);
+        }
     }
 
-    // Redirect to generator with params
     window.location.href = '/generator?' + params.toString();
 }
 
 // Citation lookup
 async function lookupCitation() {
-    const citation = document.getElementById('citationInput').value;
+    const citation = document.getElementById('citationInput').value.trim();
     if (!citation) {
-        alert('Please enter a citation');
+        showError('Please enter a citation');
         return;
     }
 
-    showLoading();
+    showLoading('Looking up citation...');
 
     try {
         const response = await fetch(`/api/research/citation/${encodeURIComponent(citation)}`);
-
-        // Check content type before parsing JSON
         const contentType = response.headers.get('content-type');
         if (!contentType || !contentType.includes('application/json')) {
-            throw new Error('Server returned an invalid response. Please try again.');
+            throw new Error('Invalid server response');
         }
 
-        let data;
-        try {
-            data = await response.json();
-        } catch (parseError) {
-            throw new Error('Failed to parse server response.');
-        }
-
+        const data = await response.json();
         if (data.error) {
             showError(data.error);
             return;
         }
 
-        // Display results
-        const container = document.getElementById('resultsContainer');
-        document.getElementById('resultCount').textContent = `${data.count} results`;
-
-        if (data.results.length === 0) {
-            container.innerHTML = `<p class="text-muted text-center mt-5">No results found for citation: ${citation}</p>`;
-            return;
-        }
-
-        let html = '<div class="list-group">';
-        data.results.forEach(result => {
-            html += `
-                <div class="list-group-item">
-                    <h6 class="mb-1">${result.case_name}</h6>
-                    <p class="mb-1 small">
-                        <strong>Date:</strong> ${result.date_filed || 'N/A'} |
-                        <strong>Status:</strong> ${result.precedential_status || 'N/A'}
-                    </p>
-                    ${result.summary ? `<p class="mb-0 small text-muted">${result.summary.substring(0, 300)}...</p>` : ''}
-                </div>
-            `;
-        });
-        html += '</div>';
-        container.innerHTML = html;
+        displayCitationResults(data, citation);
 
     } catch (error) {
-        showError(error.message || 'An unexpected error occurred.');
+        showError(error.message || 'Citation lookup failed');
     }
+}
+
+// Display citation results
+function displayCitationResults(data, citation) {
+    const container = document.getElementById('resultsContainer');
+    document.getElementById('resultCount').textContent = data.count || 0;
+
+    if (!data.results || data.results.length === 0) {
+        container.innerHTML = `
+            <div class="text-center text-muted py-5">
+                <i class="bi bi-x-circle" style="font-size: 2rem;"></i>
+                <h6 class="mt-3">No results found</h6>
+                <p>Citation "${escapeHtml(citation)}" not found in database.</p>
+            </div>`;
+        return;
+    }
+
+    let html = `<div class="alert alert-info mb-3">Citation lookup: <strong>${escapeHtml(citation)}</strong></div>`;
+    html += '<div class="list-group list-group-flush">';
+
+    data.results.forEach(result => {
+        html += `
+            <div class="list-group-item py-3">
+                <h6 class="mb-1 text-primary">${escapeHtml(result.case_name)}</h6>
+                <p class="mb-1 small">
+                    <strong>Date:</strong> ${result.date_filed || 'N/A'}
+                    ${result.precedential_status ? ` | <strong>Status:</strong> ${result.precedential_status}` : ''}
+                    ${result.citation_count ? ` | <strong>Cited:</strong> ${result.citation_count} times` : ''}
+                </p>
+                ${result.summary ? `<p class="mb-0 small text-muted">${escapeHtml(result.summary.substring(0, 400))}...</p>` : ''}
+            </div>`;
+    });
+
+    html += '</div>';
+    container.innerHTML = html;
+    document.getElementById('pagination').style.display = 'none';
 }
 
 // Docket lookup
 async function lookupDocket() {
-    const input = document.getElementById('docketNumber').value;
+    const input = document.getElementById('docketNumber').value.trim();
     if (!input) {
-        alert('Please enter a docket number or ID');
+        showError('Please enter a docket number or ID');
         return;
     }
 
-    // If it looks like a numeric ID, look up directly
     if (/^\d+$/.test(input)) {
-        showCaseDetail(parseInt(input), 'Docket ' + input);
+        showCaseDetail(parseInt(input), 'Docket ' + input, `https://www.courtlistener.com/docket/${input}/`);
     } else {
-        // Search by docket number
-        showLoading();
+        showLoading('Searching for docket...');
         try {
             const response = await fetch(`/api/research/dockets?docket_number=${encodeURIComponent(input)}`);
-
-            // Check content type before parsing JSON
             const contentType = response.headers.get('content-type');
             if (!contentType || !contentType.includes('application/json')) {
-                throw new Error('Server returned an invalid response. Please try again.');
+                throw new Error('Invalid server response');
             }
 
-            let data;
-            try {
-                data = await response.json();
-            } catch (parseError) {
-                throw new Error('Failed to parse server response.');
-            }
-
+            const data = await response.json();
             if (data.error) {
                 showError(data.error);
                 return;
             }
 
-            displayDocketResults(data);
+            displayResults(data);
 
         } catch (error) {
-            showError(error.message || 'An unexpected error occurred.');
+            showError(error.message || 'Docket lookup failed');
         }
     }
 }
 
-// Display docket results
-function displayDocketResults(data) {
-    const container = document.getElementById('resultsContainer');
-    document.getElementById('resultCount').textContent = `${data.count} results`;
-
-    if (data.results.length === 0) {
-        container.innerHTML = '<p class="text-muted text-center mt-5">No dockets found.</p>';
-        return;
-    }
-
-    let html = '<div class="list-group">';
-    data.results.forEach(result => {
-        const status = result.date_terminated ? 'Closed' : 'Open';
-        const statusClass = result.date_terminated ? 'text-muted' : 'text-success';
-
-        html += `
-            <div class="list-group-item list-group-item-action" onclick="showCaseDetail(${result.id}, '${result.case_name.replace(/'/g, "\\'")}')">
-                <div class="d-flex justify-content-between align-items-start">
-                    <h6 class="mb-1">${result.case_name}</h6>
-                    <span class="badge ${result.date_terminated ? 'bg-secondary' : 'bg-success'}">${status}</span>
-                </div>
-                <p class="mb-1 small">
-                    <strong>Docket:</strong> ${result.docket_number} |
-                    <strong>Filed:</strong> ${result.date_filed || 'N/A'}
-                </p>
-                <p class="mb-0 small text-muted">
-                    ${result.judge ? `<strong>Judge:</strong> ${result.judge}` : ''}
-                    ${result.nature_of_suit ? ` | <strong>NOS:</strong> ${result.nature_of_suit}` : ''}
-                </p>
-            </div>
-        `;
-    });
-    html += '</div>';
-    container.innerHTML = html;
-}
-
-// Pagination
-function changePage(direction) {
-    // Not implemented - would need to handle pagination URLs from API
-    alert('Pagination not yet implemented');
-}
-
 // Helper functions
-function showLoading() {
+function showLoading(message = 'Loading...') {
     document.getElementById('resultsContainer').innerHTML = `
-        <div class="text-center mt-5">
+        <div class="text-center py-5">
             <div class="spinner-border text-primary" role="status"></div>
-            <p class="mt-2">Searching...</p>
-        </div>
-    `;
+            <p class="mt-3 text-muted">${message}</p>
+        </div>`;
 }
 
 function showError(message) {
     document.getElementById('resultsContainer').innerHTML = `
-        <div class="alert alert-danger mt-3">
-            <i class="bi bi-exclamation-triangle"></i> Error: ${message}
-        </div>
-    `;
-    document.getElementById('resultCount').textContent = '0 results';
+        <div class="alert alert-danger m-3">
+            <i class="bi bi-exclamation-triangle"></i> <strong>Error:</strong> ${escapeHtml(message)}
+        </div>`;
+    document.getElementById('resultCount').textContent = '0';
+    document.getElementById('pagination').style.display = 'none';
+}
+
+function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function setView(mode) {
+    document.getElementById('listViewBtn').classList.toggle('active', mode === 'list');
+    document.getElementById('detailViewBtn').classList.toggle('active', mode === 'detail');
+    // Future: implement different view modes
 }
 </script>
 {% endblock %}

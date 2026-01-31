@@ -113,6 +113,9 @@ test('175. Preview button is disabled initially', async ({ page }) => {
 test('176. Upload page has attorney name field', async ({ page }) => {
   await page.goto(`${BASE_URL}/upload`);
   await bypassRegistration(page);
+  // Attorney section is collapsed by default, expand it first
+  await page.click('[data-bs-target="#attorneyCollapse"]');
+  await page.waitForTimeout(500);
   await expect(page.locator('#attorneyName')).toBeVisible();
 });
 
@@ -284,6 +287,9 @@ test('194. Upload page attorney section collapses', async ({ page }) => {
 test('195. Upload page has attorney email field', async ({ page }) => {
   await page.goto(`${BASE_URL}/upload`);
   await bypassRegistration(page);
+  // Attorney section is collapsed by default, expand it first
+  await page.click('[data-bs-target="#attorneyCollapse"]');
+  await page.waitForTimeout(500);
   await expect(page.locator('#attorneyEmail')).toBeVisible();
 });
 

@@ -167,10 +167,17 @@ test('24. Registration modal has submit button', async ({ page }) => {
 });
 
 test('25. Registration modal cannot be closed without registering', async ({ page }) => {
+  // Clear localStorage to ensure modal appears
   await page.goto(BASE_URL);
+  await page.evaluate(() => localStorage.clear());
+  await page.reload();
+  // Wait for modal to appear
+  await expect(page.locator('#registrationModal.show')).toBeVisible({ timeout: 10000 });
+  // Try to close with Escape
   await page.keyboard.press('Escape');
   await page.waitForTimeout(500);
-  await expect(page.locator('#registrationModal')).toBeVisible();
+  // Modal should still be visible due to data-bs-backdrop="static" and data-bs-keyboard="false"
+  await expect(page.locator('#registrationModal.show')).toBeVisible();
 });
 
 test('26. Registration modal hides after registration', async ({ page }) => {
