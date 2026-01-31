@@ -21,6 +21,7 @@ from services.courtlistener_client import (
     format_parties,
     DC_COURT_IDS
 )
+from services.perplexity_client import PerplexityClient
 from config import Config
 
 research_bp = Blueprint('research', __name__, url_prefix='/api/research')
@@ -69,10 +70,46 @@ def handle_api_error(e, operation="API request"):
 def api_status():
     """Check if CourtListener API is configured."""
     token = Config.COURTLISTENER_API_TOKEN
+    perplexity = PerplexityClient()
     return jsonify({
         "configured": bool(token),
-        "message": "API token configured" if token else "Set COURTLISTENER_API_TOKEN in .env file"
+        "message": "API token configured" if token else "Set COURTLISTENER_API_TOKEN in .env file",
+        "perplexity_available": perplexity.is_configured()
     })
+
+
+@research_bp.route('/ai-search', methods=['GET'])
+def ai_search():
+    """
+    Fallback search using Perplexity AI.
+    Used when CourtListener times out or is unavailable.
+
+    Query parameters:
+        q: Search query (required)
+        type: Search type - "o" (opinions), "r" (recap), "d" (dockets)
+    """
+    try:
+        client = PerplexityClient()
+
+        if not client.is_configured():
+            return jsonify({"error": "AI search is not configured"}), 503
+
+        query = request.args.get('q', '')
+        if not query:
+            return jsonify({"error": "Search query 'q' is required"}), 400
+
+        search_type = request.args.get('type', 'o')
+
+        result = client.search_cases(query, search_type)
+
+        if "error" in result:
+            return jsonify(result), 500
+
+        return jsonify(result)
+
+    except Exception as e:
+        logger.error(f"AI search error: {str(e)}")
+        return jsonify({"error": str(e)}), 500
 
 
 @research_bp.route('/cases', methods=['GET'])
