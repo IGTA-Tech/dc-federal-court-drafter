@@ -30,6 +30,7 @@ env/
 .idea/
 *.swp
 *.swo
+temp_auto_push.bat
 *~
 
 # Testing
@@ -55,10 +56,11 @@ cache/
 webapp/output/registered_users.csv
 
 # Secrets
-.env
-.env.local
 *.key
 credentials.json
 
 # Temp files
 tmpclaude-*
+config.bat
+node_modules
+.gitignore
